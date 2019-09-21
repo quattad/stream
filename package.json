@@ -12,13 +12,21 @@
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.1"
   },
+  "jest": {
+    "setupTestFrameworkScriptFile": "<rootDir>test/setup.js",
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less)$": "identity-obj-proxy"
+    }
+  },
   "scripts": {
     "start": "react-scripts start",
-    "unit": "jest test/.*\\.spec\\.js",
+    "lint": "eslint src/**/*.js test/**/*.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "e2e": "cypress open"
+    "e2e": "cypress open",
+    "unit": "jest test/.*\\.spec\\.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -47,10 +55,9 @@
     "cypress": "^3.4.1",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
-    "jest": "^24.9.0"
-  },
-  "jest": {
-    "setupTestFrameworkScriptFile": "<rootDir>test/setup.js"
+    "eslint": "^6.4.0",
+    "identity-obj-proxy": "^3.0.0",
+    "react-test-renderer": "^16.9.0"
   },
   "keywords": [],
   "author": "",
