@@ -20,7 +20,8 @@ router.route('/add').post(
     (req, res) => {
         console.log(req.body)
         const username = req.body.username;
-        const newUser = new User({username});  // create new instance of user using the username
+        const prefix = req.body.prefix
+        const newUser = new User({username, prefix});  // create new instance of user using the username
 
         newUser.save()
             .then(() => res.json('User added!'))
@@ -44,9 +45,10 @@ router.route('/update/:id').post(
         User.findById(req.params.id)
             .then(user => {
                 user.username = req.body.username
+                user.username = req.body.prefix
 
                 user.save()
-                    .then(() => res.json('Username updated!'))
+                    .then(() => res.json('User updated!'))
                     .catch(err => res.status(400).json('Error: ' + err));
             })
             .catch(err => res.status(400).json('Error: ' + err));

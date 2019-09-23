@@ -10,10 +10,10 @@ export default class Navbar extends Component {
                 <ul class="navbar-nav">
                 <a class="navbar-brand" href="#">Logo</a>
                 <li class="nav-item active">
-                  <a class="nav-link" href="#">Active</a>
+                  <a class="nav-link" href="/">Home</a>
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="#">Active</a>
+                  <a class="nav-link" href="/user">Create User</a>
                 </li>
                 <li class="nav-item active">
                   <a class="nav-link" href="#">Active</a>
