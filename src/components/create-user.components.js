@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 
+// Import axios to allow frontend to send HTTP requests to backend
+import axios from 'axios';
+
 export default class CreateUser extends Component {
     constructor(props) {
         super(props); // always call super when defining the constructor of a subclass
@@ -22,7 +25,6 @@ export default class CreateUser extends Component {
     // componentDidMount will be called right before anything is displayed on the page
     componentDidMount () {
         this.setState({
-            // TODO - set users array to be loaded with prefix values from database
             username: '',
             prefixes: ['Mr', 'Mrs']
         })
@@ -53,11 +55,12 @@ export default class CreateUser extends Component {
             prefix: this.state.prefix
         }
 
-        // TO DEL
-        console.log(user)
+        // Send JSON object to backend endpoint
+        axios.post('http://localhost:5000/users/add', user)
+            .then(res => console.log(res.data));
 
         // Redirect back to homepage
-        window.location = '/user'
+        window.location = '/users'
     }
 
     render() {

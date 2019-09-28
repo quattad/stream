@@ -12,7 +12,7 @@ function App() {
     // Map url paths to diff. components to load on page
     <Router>
       <Navbar />
-      <Route path="/user" component={ CreateUser } />
+      <Route path="/users" component={ CreateUser } />
     </Router>
     );
   }

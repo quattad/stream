@@ -8,12 +8,12 @@ export default class Navbar extends Component {
             <React.Fragment>
               <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
                 <ul class="navbar-nav">
-                <a class="navbar-brand" href="#">Logo</a>
+                <a class="navbar-brand" href="#">Stream</a>
                 <li class="nav-item active">
                   <a class="nav-link" href="/">Home</a>
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="/user">Create User</a>
+                  <a class="nav-link" href="/users">Create User</a>
                 </li>
                 <li class="nav-item active">
                   <a class="nav-link" href="#">Active</a>
