@@ -13,7 +13,7 @@ export default class Navbar extends Component {
                   <a class="nav-link" href="/">Home</a>
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link" href="/users">Create User</a>
+                  <a class="nav-link" href="/register">Create User</a>
                 </li>
                 <li class="nav-item active">
                   <a class="nav-link" href="#">Active</a>
