@@ -20,8 +20,9 @@ router.route('/add').post(
     (req, res) => {
         console.log(req.body)
         const username = req.body.username;
-        const prefix = req.body.prefix
-        const newUser = new User({username, prefix});  // create new instance of user using the username
+        const prefix = req.body.prefix;
+        const password = req.body.password;
+        const newUser = new User({username, prefix, password});  // create new instance of user using the username
 
         newUser.save()
             .then(() => res.json('User added!'))
