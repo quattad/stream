@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser')
 
 // Allow connection to db server
 const mongoose = require('mongoose');
@@ -10,7 +9,7 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000
 
-// Middleware
+// Middleware - must be used in ALL files that create an Express app, otherwise will not be able to parse POST requests
 app.use(cors())
 app.use(express.json())
 

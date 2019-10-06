@@ -18,7 +18,6 @@ router.route('/').get(
 // Create user
 router.route('/add').post( 
     (req, res) => {
-        console.log(req.body)
         const username = req.body.username;
         const prefix = req.body.prefix;
         const password = req.body.password;
@@ -26,12 +25,12 @@ router.route('/add').post(
 
         newUser.save()
             .then(() => res.json('User added!'))
-            .catch(err => res.status(400).json('Error: ' + err));
+            .catch(err => res.status(400).json('Err: ' + err));
     }
 );
 
 
-// Fetch information about one user
+// Fetch information about one user via id
 router.route('/:id').get(
     (req, res) => {
         User.findById(req.params.id)
