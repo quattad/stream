@@ -170,19 +170,149 @@ describe('CRUD functionality', () => {
     });
 
 // Update tests
-// describe('user-model-tests-update', () => {
-//     it('Test 1', (done) => {
-//         assert(1 == 1);
-//         done();
-//     });
-// });
+describe('Update functionality', () => {
+    describe('Updating username', () => {
+        it('Check if username can be successfully updated with valid username, should return status 200 with success msg', (done) => {
+            test_app
+            .post(`/users/${test_user._id}/update/username`)
+            .send({
+                'username': 'updated-username'
+            })
+            .expect(200)
+            .end((err, res) => {
+                if (err) return done(err);
+                expect(res.body.message).to.equals('Username successfully updated!')
+                done();
+            });
+        });
+
+        it('Check if username is not succesfully updated with blank username, should return status 400 with failure msg', (done) => {
+            test_app
+            .post(`/users/${test_user._id}/update/username`)
+            .send({
+                'username': ' '
+            })
+            .expect(200)
+            .end((err, res) => {
+                if (err) return done(err);
+                expect(res.body.message).to.equals('Please enter a username!')
+                done();
+            });
+        });
+
+        // TODO - specify expect redirect URI
+        it('Check if username is not succesfully updated with invalid username, should return status 302 with failure msg, redirect back to update page', (done) => {
+            test_app
+            .post(`/users/${test_user._id}/update/username`)
+            .send({
+                'username': '12'
+            })
+            .expect(200)
+            .end((err, res) => {
+                if (err) return done(err);
+                expect(res.body.message).to.equals('Invalid username. Please enter a valid username!')
+                done();
+            });
+        });
+
+        // TODO - specify expect redirect URI
+        it('Check if username is not succesfully updated with invalid/blank user id, should return status 302 with failure msg, redirect back to update page', (done) => {
+            test_app
+            .post(`/users/!@#$%/update/username`)
+            .send({
+                'username': 'test-user1'
+            })
+            .expect(302)
+            .end((err, res) => {
+                if (err) return done(err);
+                expect(res.body.message).to.equals('Username successfully updated!')
+                done();
+            });
+        });
+    });
+
+    describe('Updating password', () => {
+        it('Check if password can be successfully updated with valid password, should return status 200 with success msg', (done) => {
+            test_app
+            .post(`/users/${test_user._id}/update/password`)
+            .expect(200)
+            .end((err, res) => {
+                if (err) return done(err);
+                expect(res.body.message).to.equals('Password successfully updated!')
+                done();
+            });
+        });
+
+        it('Check if password can be successfully updated with valid password, should return status 200 with success msg', (done) => {
+            test_app
+            .post(`/users/${test_user._id}/update/password`)
+            .expect(200)
+            .end((err, res) => {
+                if (err) return done(err);
+                expect(res.body.message).to.equals('Password successfully updated!')
+                done();
+            });
+        });
+
+        it('Check if password update fails with invalid password, should return status 302 with failure msg, redirect back to update/password page', (done) => {
+            test_app
+            .post(`/users/${test_user._id}/update/password`)
+            .send({
+                'password': '12'
+            })
+            .expect(302)
+            .end((err, res) => {
+                if (err) return done(err);
+                expect(res.body.message).to.equals('Please provide a valid password!')
+                done();
+            });
+        });
+
+        it('Check if password update fails with password same as username, should return status 302 with failure msg, redirect back to update/password page', (done) => {
+            test_app
+            .post(`/users/${test_user._id}/update/password`)
+            .send({
+                'password': `${test_user.username}`})
+            .expect(302)
+            .end((err, res) => {
+                if (err) return done(err);
+                expect(res.body.message).to.equals('Your password cannot be the same as your username.')
+                done();
+            });
+        });
+    });
+});
 
 // Delete tests
-// describe('user-model-tests-delete', () => {
-//     it('Test 1', (done) => {
-//         assert(1 == 1);
-//         done();
-//     });
-// })
+describe('Delete functionality', () => {
+    describe('Deleting a user', () => {
+        it('Check if existing user can be successfully deleted, should return status 302 with success msg and redirect to user deleted page', (done) => {
+            test_app
+                .post(`/users/${test_user._id}/delete`)
+                .send({
+                    '_id':`${test_user._id}`
+                })
+                .expect(302)
+                .end((err, res) => {
+                    if (err) return done(err)
+                    expect(res.body.message).to.equals('Your user was successfully deleted!')
+                    done();
+                });
+        });
 
+        it('Check if invalid user id should return status 400 with failure msg and redirect to user deleted page', (done) => {
+            test_app
+                .post(`/users/12345/delete`)
+                .send({
+                    '_id':'12345'
+                })
+                .expect(400)
+                .end((err, res) => {
+                    if (err) return done(err)
+                    expect(res.body.message).to.equals('Your user was successfully deleted!')
+                    done();
+                });
+        });
+    });
+});
 });
