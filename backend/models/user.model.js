@@ -10,7 +10,8 @@ const userSchema = new Schema(
             required: true,
             unique: true,
             trim: true,
-            minlength: 5
+            minlength: 5,
+            lowercase: true
         },
         prefix: {
             type: String,
