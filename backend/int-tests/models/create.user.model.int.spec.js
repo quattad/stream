@@ -29,7 +29,7 @@
      // Seed database; assumes model and routes already created
      beforeEach((done) => {
          test_user = new User({
-             'username':'test-user1',
+             'username':'User1',
              'password':'p@ssw0rd123!',
              'prefix':'Mr'
          })
@@ -45,7 +45,7 @@
              test_app
                  .post('/users/add')
                  .send({
-                     'username':'test-user2',
+                     'username':'User2',
                      'password':'p@ssw0rd123!',
                      'prefix':'Mr'
                  })
@@ -63,7 +63,7 @@
              test_app
                  .post('/users/add')
                  .send(
-                     {'username':'test-user1',
+                     {'username':'User1',
                      'password':'p@ssw0rd123!',
                      'prefix':'Mr'}
                  )
