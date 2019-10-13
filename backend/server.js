@@ -26,4 +26,6 @@ connection.once('open', () => {
 
 // Import and use routers
 const usersRouter = require('./routes/users')
+const projectsRouter = require('./routes/projects')
 app.use('/users', usersRouter)
+app.use('/projects', projectsRouter)

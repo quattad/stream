@@ -26,7 +26,7 @@
  let test_app = request(app)
  
 // Delete tests
-describe('CRUD functionality', () => {
+describe('CRUD functionality for user.model', () => {
     describe('Delete functionality', () => {
         describe('Deleting a user', () => {
             it('Check if existing user can be successfully deleted, should return status 302 with success msg and redirect to user deleted page', (done) => {

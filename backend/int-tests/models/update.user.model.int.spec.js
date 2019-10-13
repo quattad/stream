@@ -24,7 +24,7 @@
  let test_app = request(app)
  
  // Create tests
- describe('CRUD functionality', () => {
+ describe('CRUD functionality for user.model', () => {
  
      // Seed database; assumes model and routes already created
      beforeEach((done) => {
