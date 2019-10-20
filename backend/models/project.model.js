@@ -12,7 +12,10 @@ const projectSchema = new Schema(
         },
         description: {
             type: String,
-            maxlength: 30
+            maxlength: 100
+        },
+        creator: {
+            type: String,
         },
         users: {
             type: Array,
@@ -21,7 +24,11 @@ const projectSchema = new Schema(
         },
         admins: {
             type: Array,
-            minlength: 1
+            minlength: 1,
+            maxlength: 10
+        },
+        features: {
+            type: Array
         }
     },
     {

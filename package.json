@@ -67,6 +67,7 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^6.4.0",
+    "express-validator": "^6.2.0",
     "identity-obj-proxy": "^3.0.0",
     "jquery": "^3.4.1",
     "mocha": "^6.2.0",
