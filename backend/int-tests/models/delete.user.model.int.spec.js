@@ -52,7 +52,7 @@ describe('CRUD functionality for user.model', () => {
                     .expect(400)
                     .end((err, res) => {
                         if (err) return done(err)
-                        expect(res.body.message).to.equals('Your user was successfully deleted!')
+                        expect(res.body.message).to.equals('Invalid user id. User not deleted')
                         done();
                     });
             });

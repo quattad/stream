@@ -21,7 +21,9 @@ router.route('/:username/add').post(
     // Validation checks defined before handling of post request as array
     [
         check('name')
-            .isLength({min: 5, max: 30}),
+            .isLength({min: 5, max: 30})
+            // .custom(value => !/\s/.test(value))
+            .withMessage('Spaces will be converted into hyphens'),
         check('description')
             .isLength({max: 100}),
         // TODO - check that current user is by default added
@@ -46,7 +48,7 @@ router.route('/:username/add').post(
             });
         }
 
-        let name = req.body.name
+        let name = req.body.name.replace(/\s+/g, '-').toLowerCase()
         let description = req.body.description
         let users = req.body.users
         let admins = req.body.admins
@@ -159,6 +161,23 @@ router.route('/:username/:name/update/admin').post(
                 .then(() => {res.json('Updated project admins')})
                 .catch((err) => {res.status(400).json('Error' + err)})
         })
+    });
+
+// Read functionality - find one project based on user and project name
+router.route('/:username/:name').get(
+    (req, res) => {
+        Project.findOne({"name": req.params.name})
+            .then(project => res.json(project))
+            .catch(err => res.status(400).json("Error: " + err))
+    }
+)
+
+// Delete functionality - delete single project based on user and project name
+router.route('/:username/:name/delete').post(
+    (req, res) => {
+        Project.findOneAndDelete({"name": req.body.name})
+            .then(project => res.status(200).json(`${req.body.name} has been successfully deleted`))
+            .catch(err => res.status(400).json("Error: " + err))
     });
 
 // Exporting router

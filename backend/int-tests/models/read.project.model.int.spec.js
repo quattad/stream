@@ -5,10 +5,8 @@
  * 3) Expected Result - Given the scenario, should the result be accepted or rejected/error thrown?
  */
 
- // Import Chai assert, expect and 
- const assert = require('chai').assert;
+ // Import Chai expect
  const expect = require('chai').expect;
- const should = require('chai').should;
  
  const request = require('supertest')
  
@@ -28,47 +26,75 @@
  
      // Seed database; assumes model and routes already created
      beforeEach((done) => {
-        test_user_username = "user1";
-        test_project_name = "Test Project 1"
-        test_project_creator = test_user_username 
-        test_project_new_name = "New Test Project 1"
-        test_project_new_description = "This is a new test project description"
-        test_project_new_user = "newuser"
-        test_project_new_admin = "newuser"
-
-
-         test_project = new Project({
-             "name": test_project_name,
+         // Test Project 1
+         // 2 x Users, 1 x Admin
+         var test_project_1 = new Project({
+             "name": "test-project-1",
              "description": "This is my test Project 1",
-             "users": [test_user_username, "user2"],
-             "admins": [test_user_username],
+             "users": ["user1", "user2"],
+             "admins": ["user1"],
              "features": ["Test Feature 1"],
-             "creator": test_project_creator
-         })
+             "creator": "user1"
+         });
 
-         test_project.save();
+         test_project_1.save();
+
+         var test_project_2 = new Project({
+            "name": "test-project-2",
+            "description": "This is my Test Project 2",
+            "users": ["user1", "user2"],
+            "admins": ["user2"],
+            "features": ["Test Feature 1", "Test Feature 2"],
+            "creator": "user2"
+        });
+
+        test_project_2.save();
+
+         // Test Project 3
+         // 3 x Users, 2 x Admins
+         var test_project_3 = new Project({
+            "name": "test-project-3",
+            "description": "This is my Test Project 3",
+            "users": ["user1", "user2", "user3"],
+            "admins": ["user1","user2"],
+            "features": ["Test Feature 1", "Test Feature 2"],
+            "creator": "user2"
+        });
+        
+        test_project_3.save();
+
          done();
      });
  
      describe('Read functionality', () => {
 
-                it('Check if existing project in db can be successfully updated with new name, should return 200 with success msg', (done) => {
+                it('Check if all existing projects in db can be successfully fetched from server, should return 200', (done) => {
                     test_app
-                        .post(`/projects/${test_user_username}/${test_project_name}/update/name`)
-                        .send({
-                            "name": test_project_new_name
-                        })
+                        .get(`/projects/user1/`)
                         .expect(200)
                         .end((err, res) => {
                             if (err) return done(err);
-
-                            Project.findOne({"name": `${test_project_new_name}`})
-                                .then(project => {
-                                    expect(project.name).to.equals(test_project_new_name)
-                                    done();
-                                })
-                                .catch((err) => {if (err) return done(err)});
+                            expect(res.body[0])
+                                .to.have.property('name', "test-project-1")
+                            expect(res.body[1])
+                                .to.have.property('name', "test-project-2")
+                            expect(res.body[2])
+                                .to.have.property('name', "test-project-3")
+                            done();
+                    });
+                });
+                    
+                it('Check if single existing project in db can be successfully fetched from server and all fields read correctly, should return 200', (done) => {
+                    test_app
+                        .get(`/projects/user1/test-project-1/`)
+                        .expect(200)
+                        .end((err, res) => {
+                            if (err) return done(err);
+                            expect(res.body).to.have.property('name', "test-project-1")
+                            expect(res.body).to.have.property('description', 'This is my test Project 1')
+                            done();
                         });
                     });
-        })
-    });
+                
+                });
+            });

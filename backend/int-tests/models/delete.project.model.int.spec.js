@@ -28,28 +28,85 @@
  
      // Seed database; assumes model and routes already created
      beforeEach((done) => {
-        test_user_username = "user1";
-        test_project_name = "Test Project 1"
-        test_project_creator = test_user_username 
-        test_project_new_name = "New Test Project 1"
-        test_project_new_description = "This is a new test project description"
-        test_project_new_user = "newuser"
-        test_project_new_admin = "newuser"
+         // Test Project 1
+         // 2 x Users, 1 x Admin
+         var test_project_1 = new Project({
+            "name": "test-project-1",
+            "description": "This is my test Project 1",
+            "users": ["user1", "user2"],
+            "admins": ["user1"],
+            "features": ["Test Feature 1"],
+            "creator": "user1"
+        });
 
+        test_project_1.save();
 
-         test_project = new Project({
-             "name": test_project_name,
-             "description": "This is my test Project 1",
-             "users": [test_user_username, "user2"],
-             "admins": [test_user_username],
-             "features": ["Test Feature 1"],
-             "creator": test_project_creator
-         })
+        var test_project_2 = new Project({
+           "name": "test-project-2",
+           "description": "This is my Test Project 2",
+           "users": ["user1", "user2"],
+           "admins": ["user2"],
+           "features": ["Test Feature 1", "Test Feature 2"],
+           "creator": "user2"
+       });
 
-         test_project.save();
-         done();
+       test_project_2.save();
+
+        // Test Project 3
+        // 3 x Users, 2 x Admins
+        var test_project_3 = new Project({
+           "name": "test-project-3",
+           "description": "This is my Test Project 3",
+           "users": ["user1", "user2", "user3"],
+           "admins": ["user1","user2"],
+           "features": ["Test Feature 1", "Test Feature 2"],
+           "creator": "user2"
+       });
+       
+       test_project_3.save();
+
+        done();
      });
  
      describe('Delete functionality', () => {
-     });
+
+        it('Check if single project in db can be deleted, should return 200 and remaining projects still in db', (done) => {
+            test_app
+                .post('/projects/user1/test-project-3/delete')
+                .send({
+                    "name": "test-project-3"
+                })
+                .expect(200)
+                .end((err, res) => {
+                    if (err) return done(err);
+
+                    // Check if test-project-3 has been successfully deleted
+                    Project.find({
+                        "name":"test-project-3"
+                    })
+                        .then(res => {
+                            expect(res).to.be.empty
+                        })
+                        .catch((err) => {if (err) return done(err)})
+                    
+                    // Check if test-project-1 and test-project-2 are still present in db
+                    Project.find({
+                        "name":"test-project-1"
+                    })
+                        .then(res => {
+                            expect(res).to.not.be.empty
+                        })
+                        .catch((err) => {if (err) return done(err)})
+
+                    Project.find({
+                        "name":"test-project-2"
+                    })
+                        .then(res => {
+                            expect(res).to.not.be.empty
+                            done();
+                        })
+                        .catch((err) => {if (err) return done(err)})
+                });
+            });
+        });
     });
