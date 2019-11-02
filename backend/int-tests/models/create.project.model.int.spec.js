@@ -28,31 +28,56 @@
  
      // Seed database; assumes model and routes already created
      beforeEach((done) => {
-        test_user_username = "user1";
-        test_project_name = "Test Project 1"
+        // Test Project 1
+        // 2 x Users, 1 x Admin
+        var test_project_1 = new Project({
+           "name": "test-project-1",
+           "description": "This is my test Project 1",
+           "users": ["user1", "user2"],
+           "admins": ["user1"],
+           "features": ["Test Feature 1"],
+           "creator": "user1"
+       });
 
-         test_project = new Project({
-             "name": test_project_name,
-             "description": "This is my test Project 1",
-             "users": [test_user_username, "user2"],
-             "admins": [test_user_username],
-             'features': ["Test Feature 1"]
-         })
+       test_project_1.save();
 
-         test_project.save();
-         done();
-     });
+       var test_project_2 = new Project({
+          "name": "test-project-2",
+          "description": "This is my Test Project 2",
+          "users": ["user1", "user2"],
+          "admins": ["user2"],
+          "features": ["Test Feature 1", "Test Feature 2"],
+          "creator": "user2"
+      });
+
+      test_project_2.save();
+
+       // Test Project 3
+       // 3 x Users, 2 x Admins
+       var test_project_3 = new Project({
+          "name": "test-project-3",
+          "description": "This is my Test Project 3",
+          "users": ["user1", "user2", "user3"],
+          "admins": ["user1","user2"],
+          "features": ["Test Feature 1", "Test Feature 2"],
+          "creator": "user2"
+      });
+      
+      test_project_3.save();
+
+       done();
+    });
  
      describe('Create functionality', () => {
  
          it('Check if project with valid fields can be created in db, should return 200 with success msg', (done) => {
              test_app
-                 .post(`/projects/${test_user_username}/add`)
+                 .post(`/projects/user2/add`)
                  .send({
-                    'name': 'Test Project 2',
+                    'name': 'test-project-2',
                     'description': 'This is my test project 2',
-                    'users': [test_user_username],
-                    'admins': [test_user_username],
+                    'users': ["user2"],
+                    'admins': ["user2"],
                     'features': ['Test Feature 1']
                 })
                  .expect(200)
@@ -65,12 +90,12 @@
 
             it('Check if project with missing name field cannot be created in db, should return status code 422 with failure msg', (done) => {
                 test_app
-                    .post(`/projects/${test_user_username}/add`)
+                    .post(`/projects/user2/add`)
                     .send({
                         'name': '',
                         'description': 'This is my test project 2',
-                        'users': [test_user_username],
-                        'admins': [test_user_username],
+                        'users': ["user2"],
+                        'admins': ["user2"],
                         'features': ['Test Feature 1']
                     })
                     .expect(422)
@@ -83,12 +108,12 @@
 
             it('Check if project with missing users field cannot be created in db, should return status code 422', (done) => {
                 test_app
-                    .post(`/projects/${test_user_username}/add`)
+                    .post(`/projects/user2/add`)
                     .send({
                         'name': 'Test Project 2',
                         'description': 'This is my test project 2',
                         'users': [],
-                        'admins': [test_user_username],
+                        'admins': ["user2"],
                         'features': ['Test Feature 1']
                     })
                     .expect(422)
@@ -101,12 +126,12 @@
 
             it('Check if project with missing admins field cannot be created in db, should return status code 422', (done) => {
                 test_app
-                    .post(`/projects/${test_user_username}/add`)
+                    .post(`/projects/user2/add`)
                     .send({
                         'name': '',
                         'description': 'Test Project',
                         'users': [],
-                        'admins': [test_user_username],
+                        'admins': ["user2"],
                         'features': ['Test Feature 1']
                     })
                     .expect(422)
@@ -119,12 +144,12 @@
 
                 it('Check if project with same name as existing project under user cannot be created in db, should return status code 422', (done) => {
                     test_app
-                        .post(`/projects/${test_user_username}/add`)
+                        .post(`/projects/user1/add`)
                         .send({
-                            'name': test_project_name,
-                            'description': 'Test Project',
+                            'name': "test-project-1",
+                            'description': 'This is my test Project 1',
                             'users': [],
-                            'admins': [test_user_username],
+                            'admins': ["user1"],
                             'features': ['Test Feature 1']
                         })
                         .expect(422)

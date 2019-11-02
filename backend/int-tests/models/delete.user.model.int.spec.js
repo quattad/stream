@@ -27,32 +27,45 @@
  
 // Delete tests
 describe('CRUD functionality for user.model', () => {
+         // Seed database; assumes model and routes already created
+         beforeEach((done) => {
+            test_user = new User({
+               'username':'User1',
+               'firstname': 'User',
+               'lastname': 'One',
+               'email': 'user1@gmail.com',
+               'password':'p@ssw0rd123!',
+               'position': 'manager'
+            })
+    
+            test_user.save();
+            done();
+        });
+
     describe('Delete functionality', () => {
         describe('Deleting a user', () => {
-            it('Check if existing user can be successfully deleted, should return status 302 with success msg and redirect to user deleted page', (done) => {
+            it('Check if existing user can be successfully deleted, should return status 200 with success msg', (done) => {
                 test_app
-                    .post(`/users/${test_user._id}/delete`)
+                    .post(`/users/delete/${test_user._id}`)
                     .send({
-                        '_id':`${test_user._id}`
+                        'id':`${test_user._id}`
                     })
-                    .expect(302)
+                    .expect(204)
                     .end((err, res) => {
                         if (err) return done(err)
-                        expect(res.body.message).to.equals('Your user was successfully deleted!')
                         done();
                     });
             });
 
             it('Check if invalid user id should return status 400 with failure msg and redirect to user deleted page', (done) => {
                 test_app
-                    .post(`/users/12345/delete`)
+                    .post(`/users/delete/12345`)
                     .send({
                         '_id':'12345'
                     })
                     .expect(400)
                     .end((err, res) => {
                         if (err) return done(err)
-                        expect(res.body.message).to.equals('Invalid user id. User not deleted')
                         done();
                     });
             });

@@ -30,8 +30,11 @@
      beforeEach((done) => {
          test_user = new User({
              'username':'User1',
+             'firstname': 'User',
+             'lastname': 'One',
+             'email': 'user1@gmail.com',
              'password':'p@ssw0rd123!',
-             'prefix':'Mr'
+             'position': 'manager'
          })
  
          test_user.save();
@@ -45,14 +48,17 @@
              test_app
                  .post('/users/add')
                  .send({
-                     'username':'User2',
+                     'username':'iamausertoo',
+                     'firstname': 'User',
+                     'lastname': 'Two',
+                     'email':'user2@gmail.com',
                      'password':'p@ssw0rd123!',
-                     'prefix':'Mr'
+                     'position': 'Manager',
+                     'projects': ['test-project-1']
                  })
                  .set('Accept','application/json')
                  .expect('Content-Type', /json/)
                  .expect(200)
-                 .expect('"User added!"')
                  .end((err) => {
                      if (err) return done(err);
                      done();
@@ -62,11 +68,14 @@
          it('Check if user already exists should not save into database, should return status 400 with correct message', (done) => {
              test_app
                  .post('/users/add')
-                 .send(
-                     {'username':'User1',
-                     'password':'p@ssw0rd123!',
-                     'prefix':'Mr'}
-                 )
+                 .send({
+                    'username':'User1',
+                    'firstname': 'User',
+                    'lastname': 'One',
+                    'email': 'user1@gmail.com',
+                    'password':'p@ssw0rd123!',
+                    'position': 'manager'
+                    })
                  .expect(400)
                  .end((err) => {
                      if (err) return done(err);
@@ -78,9 +87,13 @@
              test_app
                  .post('/users/add')
                  .send({
-                     'username':'',
-                     'password':'p@ssw0rd123!', 
-                     'prefix':'Mr'})
+                    'username':'',
+                    'firstname': 'User',
+                    'lastname': 'One',
+                    'email': 'user1@gmail.com',
+                    'password':'p@ssw0rd123!',
+                    'position': 'manager'
+                })
                  .expect(400)
                  .end((err) => {
                      if (err) return done(err);
@@ -92,9 +105,13 @@
                  test_app
                      .post('/users/add')
                      .send({
-                         'username':'test-user',
-                         'password':'', 
-                         'prefix':'Mr'})
+                        'username':'User1',
+                        'firstname': 'User',
+                        'lastname': 'One',
+                        'email': 'user1@gmail.com',
+                        'password':'',
+                        'position': 'manager'
+                        })
                      .expect(400)
                      .end((err) => {
                          if (err) return done(err);
@@ -102,13 +119,17 @@
                      })
                  });
  
-             it('User with empty prefix cannot be saved into database, should return status 400 with correct message', (done) => {
+             it('User with empty first name cannot be saved into database, should return status 400 with correct message', (done) => {
                  test_app
                      .post('/users/add')
                      .send({
-                         'username':'test-user',
-                         'password':'', 
-                         'prefix':''})
+                        'username':'User1',
+                        'firstname': '',
+                        'lastname': 'One',
+                        'email': 'user1@gmail.com',
+                        'password':'p@ssw0rd123!',
+                        'position': 'manager'
+                     })
                      .expect(400)
                      .end((err) => {
                          if (err) return done(err);

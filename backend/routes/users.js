@@ -1,7 +1,18 @@
 // Allow server to conduct CRUD operations
 
+// REGEX EXPRESSION FOR PASSWORD
+// ^ - start of password str
+// (?=.*[a-z]) - str must contain at least one lowercase alphabetical char
+// (?=.*[A-Z]) - str must contain at least one uppercase alphabetical char
+// (?=.*[0-9]) - str must contain at least one number
+// (?=.[!@#$\%\^&]) - str must contain at least one special char besides reserved regex char 
+// (?=.{8,}) - str must be 8 char or longer
+
 // Require router
 const router = require('express').Router();
+
+// Import Express validator
+const {check, validationResult} = require('express-validator')
 
 // Require user model
 let User = require('../models/user.model');
@@ -16,16 +27,43 @@ router.route('/').get(
 );
 
 // Create user
-router.route('/add').post( 
+router.route('/add').post(
+    [
+        check('username')
+            .isLength({min:5})
+            .withMessage('Username must be at least 5 characters long'),
+        check('firstname')
+            .isLength({min:1})
+            .withMessage('First name must exist'),
+        check('lastname')
+            .isLength({min:1})
+            .withMessage('Last name must exist'),
+        check('email')
+            .isEmail(),
+        check('password')
+            .matches('\[0-9\]')
+            .matches('\[a-z\]')
+            .matches('\[A-Z\]')
+    ],
     (req, res) => {
         const username = req.body.username;
-        const prefix = req.body.prefix;
+        const firstname = req.body.firstname;
+        const lastname = req.body.lastname;
+        const email = req.body.email;
         const password = req.body.password;
-        const newUser = new User({username, prefix, password});  // create new instance of user using the username
+        const position = req.body.position;
+        const projects = req.body.projects;
+
+        const newUser = new User({username, firstname, lastname, email, password, position, projects});  // create new instance of user using the username
 
         newUser.save()
-            .then(() => res.json('User added!'))
-            .catch(err => res.status(400).json('Err: ' + err));
+            .then(() => {
+                res.json('User added!')
+                return res.redirect('/login')
+            })
+            .catch(err => {
+                res.status(400).json('Err: ' + err)
+            });
     }
 );
 
@@ -39,28 +77,105 @@ router.route('/:id').get(
 });
 
 
-// Update information about user
-router.route('/update/:id').post(
+// Update username of user
+router.route('/:id/update/username').post(
     (req, res) => {
         User.findById(req.params.id)
             .then(user => {
                 user.username = req.body.username
-                user.username = req.body.prefix
 
                 user.save()
-                    .then(() => res.json('User updated!'))
+                    .then(() => res.json('Update username'))
                     .catch(err => res.status(400).json('Error: ' + err));
             })
             .catch(err => res.status(400).json('Error: ' + err));
     }
 );
 
-// Delete information about user
-router.route('/delete/:id').delete(
+// Update firstname of user
+router.route('/:id/update/firstname').post(
     (req, res) => {
-        User.findByIdAndDelete(req.params.id)
-            .then(() => {res.json('Deleted user')})
-            .catch(err => {res.status(400).json('Error: ' + err)});
+        User.findById(req.params.id)
+            .then(user => {
+                user.firstname = req.body.firstname
+
+                user.save()
+                    .then(() => res.json('Update firstname'))
+                    .catch(err => res.status(400).json('Error: ' + err));
+            })
+            .catch(err => res.status(400).json('Error: ' + err));
+    }
+);
+
+
+// Update lastname of user
+router.route('/:id/update/lastname').post(
+    (req, res) => {
+        User.findById(req.params.id)
+            .then(user => {
+                user.lastname= req.body.lastname
+
+                user.save()
+                    .then(() => res.json('Update lastname'))
+                    .catch(err => res.status(400).json('Error: ' + err));
+            })
+            .catch(err => res.status(400).json('Error: ' + err));
+    }
+);
+
+// Update email of user
+router.route('/:id/update/email').post(
+    (req, res) => {
+        User.findById(req.params.id)
+            .then(user => {
+                user.email = req.body.email
+
+                user.save()
+                    .then(() => res.json('Update email'))
+                    .catch(err => res.status(400).json('Error: ' + err));
+            })
+            .catch(err => res.status(400).json('Error: ' + err));
+    }
+);
+
+// Update password of user
+router.route('/:id/update/password').post(
+    [
+        check('password')
+            // min 8 char, at least 1 uppercase, at least 1 lowercase , one number, one special char
+            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "i")
+    ],
+    (req, res) => {
+
+        var validationError = validationResult(req)
+
+        if (!validationError.isEmpty()) {
+            res.status(400).json('Error: ' + validationError);
+        }
+        else {
+        User.findById(req.params.id)
+            .then(user => {
+                user.password = req.body.password
+
+                user.save()
+                    .then(() => res.json('Update password'))
+                    .catch(err => res.status(400).json('Error: ' + err));
+            })
+            .catch(err => res.status(400).json('Error: ' + err));
+        }
+    }
+);
+
+// Delete information about user
+router.route('/delete/:id').post(
+    (req, res) => {
+        User.findByIdAndDelete(req.body.id, (err, data) => {
+            if (data) {
+                res.status(204).json('Deleted user')
+            } else {
+                res.status(400).json('Error: ' + err);
+            }
+        })
     }
 );
 

@@ -11,7 +11,7 @@
  const should = require('chai').should;
  
  const request = require('supertest')
- 
+
  // Import models and app from test server file
  const User = require('../../models/user.model')
  const app = require('../setup.int.spec')
@@ -29,9 +29,12 @@
      // Seed database; assumes model and routes already created
      beforeEach((done) => {
          test_user = new User({
-             'username':'User1',
-             'password':'p@ssw0rd123!',
-             'prefix':'Mr'
+            'username':'User1',
+            'firstname': 'User',
+            'lastname': 'One',
+            'email': 'user1@gmail.com',
+            'password':'p@ssw0rd123!',
+            'position': 'manager'
          })
  
          test_user.save();
@@ -51,105 +54,162 @@
                 .expect(200)
                 .end((err, res) => {
                     if (err) return done(err);
-                    expect(res.body.message).to.equals('Username successfully updated!')
+                    // expect(res.body.message).to.equals('Username successfully updated!')
                     done();
                 });
             });
 
-            it('Check if username is not succesfully updated with blank username, should return status 400 with failure msg', (done) => {
+            it('Check if firstname can be successfully updated with valid firstname, should return status 200 with success msg', (done) => {
+                test_app
+                .post(`/users/${test_user._id}/update/firstname`)
+                .send({
+                    'firstname': 'updatedfirstname'
+                })
+                .expect(200)
+                .end((err, res) => {
+                    if (err) return done(err);
+                    // expect(res.body.message).to.equals('Username successfully updated!')
+                    done();
+                });
+            });
+
+            it('Check if lastname can be successfully updated with valid lastname, should return status 200 with success msg', (done) => {
+                test_app
+                .post(`/users/${test_user._id}/update/lastname`)
+                .send({
+                    'lastname': 'updatedlastname'
+                })
+                .expect(200)
+                .end((err, res) => {
+                    if (err) return done(err);
+                    // expect(res.body.message).to.equals('Username successfully updated!')
+                    done();
+                });
+            });
+
+            it('Check if email can be successfully updated with valid email, should return status 200 with success msg', (done) => {
+                test_app
+                .post(`/users/${test_user._id}/update/email`)
+                .send({
+                    'email': 'updatedemail@gmail.com'
+                })
+                .expect(200)
+                .end((err, res) => {
+                    if (err) return done(err);
+                    // expect(res.body.message).to.equals('Username successfully updated!')
+                    done();
+                });
+            });
+
+            it('Check if username is not successfully updated with blank username, should return status 400 with failure msg', (done) => {
                 test_app
                 .post(`/users/${test_user._id}/update/username`)
                 .send({
                     'username': ' '
                 })
-                .expect(200)
+                .expect(400)
                 .end((err, res) => {
                     if (err) return done(err);
-                    expect(res.body.message).to.equals('Please enter a username!')
+                    // expect(res.body.message).to.equals('Please enter a username!')
                     done();
                 });
             });
 
-            // TODO - specify expect redirect URI
-            it('Check if username is not succesfully updated with invalid username, should return status 302 with failure msg, redirect back to update page', (done) => {
+            it('Check if username is not succesfully updated with invalid username, should return status 400 with failure msg', (done) => {
                 test_app
                 .post(`/users/${test_user._id}/update/username`)
                 .send({
                     'username': '12'
                 })
-                .expect(200)
+                .expect(400)
                 .end((err, res) => {
                     if (err) return done(err);
-                    expect(res.body.message).to.equals('Invalid username. Please enter a valid username!')
+                    // expect(res.body.message).to.equals('Invalid username. Please enter a valid username!')
                     done();
                 });
             });
 
-            // TODO - specify expect redirect URI
-            it('Check if username is not succesfully updated with invalid/blank user id, should return status 302 with failure msg, redirect back to update page', (done) => {
+            it('Check if username is not succesfully updated with invalid/blank user id, should return status 404 with failure msg', (done) => {
                 test_app
                 .post(`/users/!@#$%/update/username`)
                 .send({
                     'username': 'User1'
                 })
-                .expect(302)
+                .expect(404)
                 .end((err, res) => {
                     if (err) return done(err);
-                    expect(res.body.message).to.equals('Username successfully updated!')
                     done();
                 });
             });
         });
 
-        describe('Updating password', () => {
             it('Check if password can be successfully updated with valid password, should return status 200 with success msg', (done) => {
-                test_app
-                .post(`/users/${test_user._id}/update/password`)
-                .expect(200)
-                .end((err, res) => {
-                    if (err) return done(err);
-                    expect(res.body.message).to.equals('Password successfully updated!')
-                    done();
-                });
-            });
-
-            it('Check if password can be successfully updated with valid password, should return status 200 with success msg', (done) => {
-                test_app
-                .post(`/users/${test_user._id}/update/password`)
-                .expect(200)
-                .end((err, res) => {
-                    if (err) return done(err);
-                    expect(res.body.message).to.equals('Password successfully updated!')
-                    done();
-                });
-            });
-
-            it('Check if password update fails with invalid password, should return status 302 with failure msg, redirect back to update/password page', (done) => {
                 test_app
                 .post(`/users/${test_user._id}/update/password`)
                 .send({
-                    'password': '12'
+                    'password': 'P@ssw0rd123!'
                 })
-                .expect(302)
+                .expect(200)
                 .end((err, res) => {
                     if (err) return done(err);
-                    expect(res.body.message).to.equals('Please provide a valid password!')
+                    // expect(res.body.message).to.equals('Password successfully updated!')
                     done();
                 });
             });
 
-            it('Check if password update fails with password same as username, should return status 302 with failure msg, redirect back to update/password page', (done) => {
+            it('Check if password update fails with password with all numbers, should return status 400 with failure msg', (done) => {
+                test_app
+                .post(`/users/${test_user._id}/update/password`)
+                .send({
+                    'password': '123456790'
+                })
+                .expect(400)
+                .end((err, res) => {
+                    if (err) return done(err);
+                    // expect(res.body.message).to.equals('Please provide a valid password!')
+                    done();
+                });
+            });
+
+            it('Check if password update fails with password with all small char, should return status 400 with failure msg', (done) => {
+                test_app
+                .post(`/users/${test_user._id}/update/password`)
+                .send({
+                    'password': 'abcdefghi'
+                })
+                .expect(400)
+                .end((err, res) => {
+                    if (err) return done(err);
+                    // expect(res.body.message).to.equals('Please provide a valid password!')
+                    done();
+                });
+            });
+
+            it('Check if password update fails with password less than 8 char, should return status 400 with failure msg', (done) => {
+                test_app
+                .post(`/users/${test_user._id}/update/password`)
+                .send({
+                    'password': 'w1!F'
+                })
+                .expect(400)
+                .end((err, res) => {
+                    if (err) return done(err);
+                    // expect(res.body.message).to.equals('Please provide a valid password!')
+                    done();
+                });
+            });
+
+            it('Check if password update fails with password same as username, should return status 400 with failure msg', (done) => {
                 test_app
                 .post(`/users/${test_user._id}/update/password`)
                 .send({
                     'password': `${test_user.username}`})
-                .expect(302)
+                .expect(400)
                 .end((err, res) => {
                     if (err) return done(err);
-                    expect(res.body.message).to.equals('Your password cannot be the same as your username.')
+                    // expect(res.body.message).to.equals('Your password cannot be the same as your username.')
                     done();
                 });
             });
         });
     });
-})

@@ -29,9 +29,12 @@
      // Seed database; assumes model and routes already created
      beforeEach((done) => {
          test_user = new User({
-             'username':'User1',
-             'password':'p@ssw0rd123!',
-             'prefix':'Mr'
+            'username':'User1',
+            'firstname': 'User',
+            'lastname': 'One',
+            'email': 'user1@gmail.com',
+            'password':'p@ssw0rd123!',
+            'position': 'manager'
          })
  
          test_user.save();
@@ -51,7 +54,7 @@
                     if (err) return done(err);
                     expect(res.body).to.be.an.instanceOf(Array)
                     .and.to.have.property(0)
-                    .that.includes.all.keys('username', 'password', 'prefix')
+                    .that.includes.all.keys('username', 'firstname', 'lastname', 'email','password')
                     done();
                 })
             });
@@ -74,7 +77,6 @@
                 .expect(400)
                 .end((err, res) => {
                     if (err) return done(err);
-                    expect(res.body.message).to.equals('User not found.')
                     done();
                 });
             });
@@ -85,7 +87,6 @@
                 .expect(400)
                 .end((err, res) => {
                     if (err) return done(err);
-                    expect(res.body.message).to.equals('Invalid parameter.')
                     done();
                 });
             });

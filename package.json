@@ -27,7 +27,9 @@
     "test-backend-int-all": "nodemon --exec mocha backend/int-tests/**/*.int.spec.js",
     "test-backend-int-user-model": "nodemon --exec mocha backend/int-tests/**/*.user.model.int.spec.js",
     "test-backend-int-project-model": "nodemon --exec mocha backend/int-tests/**/*.project.model.int.spec.js",
-    "test-backend-int-cust": "nodemon --exec mocha backend/int-tests/**/create.user.model.int.spec.js",
+    "test-backend-int-feature-model": "nodemon --exec mocha backend/int-tests/**/*.feature.model.int.spec.js",
+    "test-backend-int-task-model": "nodemon --exec mocha backend/int-tests/**/*.task.model.int.spec.js",
+    "test-backend-int-cust": "nodemon --exec mocha backend/int-tests/**/delete.user.model.int.spec.js",
     "test-frontend": "react-scripts test",
     "e2e": "cypress open",
     "lint": "eslint src/**/*.js test/**/*.js",
@@ -74,6 +76,7 @@
     "popper.js": "^1.15.0",
     "react-router-dom": "^5.0.1",
     "react-test-renderer": "^16.9.0",
+    "reactstrap": "^8.1.1",
     "supertest": "^4.0.2"
   },
   "keywords": [],

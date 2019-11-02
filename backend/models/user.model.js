@@ -13,14 +13,27 @@ const userSchema = new Schema(
             minlength: 5,
             lowercase: true
         },
-        prefix: {
+        firstname: {
+            type: String,
+            required: true
+        },
+        lastname: {
+            type: String,
+            required: true
+        },
+        email: {
             type: String,
             required: true,
+            unique: true,
             trim: true
         },
         password: {
             type: String,
-            required: true
+            required: true,
+            minlength: 8
+        },
+        position: {
+            type: String
         },
         projects: {
             type: Array
