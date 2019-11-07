@@ -38,7 +38,6 @@
          })
  
          test_user.save();
-         // console.log('Database seeded. Running test...')
          done();
      });
  

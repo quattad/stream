@@ -8,6 +8,9 @@
 // (?=.[!@#$\%\^&]) - str must contain at least one special char besides reserved regex char 
 // (?=.{8,}) - str must be 8 char or longer
 
+// Require request for CORS proxy workaround
+const request = require('request')
+
 // Require router
 const router = require('express').Router();
 
@@ -38,33 +41,40 @@ router.route('/add').post(
         check('lastname')
             .isLength({min:1})
             .withMessage('Last name must exist'),
+        // TODO - Create conditions & regex for email verification
         check('email')
             .isEmail(),
         check('password')
-            .matches('\[0-9\]')
-            .matches('\[a-z\]')
-            .matches('\[A-Z\]')
+            // min 8 char, at least 1 uppercase, at least 1 lowercase , one number, one special char, case insensitive
+            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "i")
     ],
     (req, res) => {
-        const username = req.body.username;
-        const firstname = req.body.firstname;
-        const lastname = req.body.lastname;
-        const email = req.body.email;
-        const password = req.body.password;
-        const position = req.body.position;
-        const projects = req.body.projects;
+        var validationError = validationResult(req)
 
-        const newUser = new User({username, firstname, lastname, email, password, position, projects});  // create new instance of user using the username
+        if (!validationError.isEmpty()) {
+            res.status(400).json('Error: ' + validationError);
+        }
+        else {
+                const username = req.body.username;
+                const firstname = req.body.firstname;
+                const lastname = req.body.lastname;
+                const email = req.body.email;
+                const password = req.body.password;
+                const position = req.body.position;
+                const projects = req.body.projects;
 
-        newUser.save()
-            .then(() => {
-                res.json('User added!')
-                return res.redirect('/login')
-            })
-            .catch(err => {
-                res.status(400).json('Err: ' + err)
-            });
-    }
+                const newUser = new User({username, firstname, lastname, email, password, position, projects});  // create new instance of user using the username
+
+                newUser.save()
+                    .then(() => {
+                        console.log('Nodejs - User added successfully')
+                        res.status(200).end()
+                    })
+                    .catch((err) => {
+                        res.status(400).json('Err: ' + err).end()
+                    });
+                }
+            }
 );
 
 
@@ -142,7 +152,7 @@ router.route('/:id/update/email').post(
 router.route('/:id/update/password').post(
     [
         check('password')
-            // min 8 char, at least 1 uppercase, at least 1 lowercase , one number, one special char
+            // min 8 char, at least 1 uppercase, at least 1 lowercase , one number, one special char, case insensitive
             .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "i")
     ],
     (req, res) => {
@@ -171,7 +181,7 @@ router.route('/delete/:id').post(
     (req, res) => {
         User.findByIdAndDelete(req.body.id, (err, data) => {
             if (data) {
-                res.status(204).json('Deleted user')
+                res.status(204).json('Delete user')
             } else {
                 res.status(400).json('Error: ' + err);
             }

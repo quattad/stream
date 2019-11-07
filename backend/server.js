@@ -24,6 +24,12 @@ connection.once('open', () => {
     console.log("MongoDB database connection established successfully!")
 });
 
+// Apply Access Control Allow Origin header to all responses from server
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*')
+    next();
+})
+
 // Import and use routers
 const usersRouter = require('./routes/users')
 const projectsRouter = require('./routes/projects')
