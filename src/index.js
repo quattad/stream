@@ -8,9 +8,8 @@ import * as serviceWorker from './serviceWorker';
 // Import Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-// Import jquery and popper.js for Bootstrap JS components
-import $ from 'jquery';
-import Popper from 'popper.js'
+// Import UI Kit React templates
+import "./assets/css/now-ui-kit.css";
 
 ReactDOM.render(
     <App />, 

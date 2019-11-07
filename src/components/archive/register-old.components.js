@@ -65,6 +65,7 @@ export default class CreateUser extends Component {
 
     render() {
         return (
+            <>
             <div>
                 <h3>Create New User</h3>
                 <form onSubmit = {this.onSubmit}>
@@ -85,6 +86,7 @@ export default class CreateUser extends Component {
                     <button type="submit" value='Create User' className='btn btn-primary'>Submit</button>
                 </form>
             </div>
+            </>
         )
     }
 }
