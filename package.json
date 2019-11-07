@@ -1,5 +1,5 @@
 {
-  "name": "algo-buddy",
+  "name": "stream-project",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -81,5 +81,6 @@
   },
   "keywords": [],
   "author": "Jonathan Quah <github.com/quattad>",
-  "license": "ISC"
+  "license": "ISC",
+  "proxy": "http://localhost:5000"
 }
