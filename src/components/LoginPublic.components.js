@@ -1,4 +1,5 @@
 import React from "react";
+import {Redirect} from "react-router"
 
 // reactstrap components
 import {
@@ -19,11 +20,60 @@ import {
 // core components
 import Navbar from "./Navbar.components";
 import TransparentFooter from "./TransparentFooter";
+import Axios from "axios";
 
 function LoginPage() {
+
+  // Create state to store entered username and pw
+  const [usernameState, setUsernameState] = React.useState("");
+  const [passwordState, setPasswordState] = React.useState("");
   
   const [usernameFocus, setUsernameFocus] = React.useState(false);
   const [passwordFocus, setPasswordFocus] = React.useState(false);
+
+  // Define form save functions
+  const onChangeUsername = (e) => {
+    setUsernameState(e.target.value)
+    console.log("Username: " + usernameState)
+  };
+  const onChangePassword = (e) => {
+    setPasswordState(e.target.value)
+    console.log("Password: " + passwordState)
+  };
+  const onShowPassword = (e) => {
+    setShowPassword(!showPassword)
+  };
+  const onShowPasswordButton = (e) => {
+    setShowPasswordButton(!showPasswordButton)
+  };
+
+  // Additional form features
+  const[fireRedirect, setFireRedirect] = React.useState(false)
+  const[showPassword, setShowPassword] = React.useState("password")
+  const[showPasswordButton, setShowPasswordButton] = React.useState("Show")
+  
+
+  const onFireRedirect = (e) => {
+    setFireRedirect(true)
+  }
+
+  // Define login function
+  // TODO - authentication function in backend
+  const onSubmitLogin = (e) => {
+    Axios.post('https://localhost:5000/login', {
+      "username": usernameState,
+      "password": passwordState
+    })
+      .then(res => {
+        if (!res.data.error) {
+          // console.log("User" + usernameState + "successfully logged in with pw" + passwordState);
+          onFireRedirect(e)
+        }
+      })
+      .catch(err => {
+        console.log("Error: " + err)
+      })
+}
 
   React.useEffect(() => {
     document.body.classList.add("login-page");
@@ -39,6 +89,7 @@ function LoginPage() {
   return (
     <>
       <Navbar />
+      {fireRedirect && <Redirect to='/login'> push={true} </Redirect>}
       <div className="page-header clear-filter" filter-color="blue">
         <div
           className="page-header-image"
@@ -72,6 +123,7 @@ function LoginPage() {
                       <Input
                         placeholder="Username"
                         type="text"
+                        onChange={(e)=>onChangeUsername(e)}
                         onFocus={() => setUsernameFocus(true)}
                         onBlur={() => setUsernameFocus(false)}
                       ></Input>
@@ -89,18 +141,33 @@ function LoginPage() {
                       </InputGroupAddon>
                       <Input
                         placeholder="Password"
-                        type="text"
+                        type={(showPassword ? "password": "text")}
+                        onChange={(e)=>onChangePassword(e)}
                         onFocus={() => setPasswordFocus(true)}
                         onBlur={() => setPasswordFocus(false)}
                       ></Input>
                     </InputGroup>
+                    <div className="col-md-auto">
+                      <Button 
+                        outline 
+                        className="btn-round"
+                        size="md"
+                        onClick={(e) => {
+                          onShowPassword(e)
+                          onShowPasswordButton(e)
+                        }}>
+                          {(showPasswordButton) ? "Show Password":"Hide Password"}
+                      </Button>
+                    </div>
                   </CardBody>
                   <CardFooter className="text-center">
                     <Button
                       block
                       className="btn-round"
                       color="info"
-                      onClick={() => 'location.href = "/register"'}
+                      onClick={(e) => {
+                        onSubmitLogin(e)
+                      }}
                       size="lg"
                     >
                       Login
