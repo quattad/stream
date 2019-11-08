@@ -241,7 +241,8 @@ const LoginPage = () => {
                                 onShowPassword(e)
                                 onShowPasswordButton(e)
                               }}
-                              >{(showPasswordButton) ? "Show":"Hide"}</Button>
+                              >{(showPasswordButton) ? "Show":"Hide"}
+                            </Button>
                           </div>
                       </div>
                     </div>
