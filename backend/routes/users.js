@@ -8,9 +8,6 @@
 // (?=.[!@#$\%\^&]) - str must contain at least one special char besides reserved regex char 
 // (?=.{8,}) - str must be 8 char or longer
 
-// Require request for CORS proxy workaround
-const request = require('request')
-
 // Require router
 const router = require('express').Router();
 
