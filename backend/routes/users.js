@@ -1,3 +1,5 @@
+// TODO - convert all endpoints to async
+
 // Allow server to conduct CRUD operations
 
 // REGEX EXPRESSION FOR PASSWORD
@@ -45,7 +47,7 @@ router.route('/add').post(
             // min 8 char, at least 1 uppercase, at least 1 lowercase , one number, one special char, case insensitive
             .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "i")
     ],
-    (req, res) => {
+    async (req, res) => {
         var validationError = validationResult(req)
 
         if (!validationError.isEmpty()) {
@@ -61,15 +63,14 @@ router.route('/add').post(
                 const projects = req.body.projects;
 
                 const newUser = new User({username, firstname, lastname, email, password, position, projects});  // create new instance of user using the username
-
                 newUser.save()
                     .then(() => {
-                        console.log('Nodejs - User added successfully')
-                        res.status(200).end()
+                        const token = newUser.generateAuthToken();
+                        res.status(201).send({newUser, token})
                     })
-                    .catch((err) => {
-                        res.status(400).json('Err: ' + err).end()
-                    });
+                    .catch ((err) => {
+                        res.status(400).send("Generate token error: " + err)
+                    })
                 }
             }
 );
@@ -185,6 +186,27 @@ router.route('/delete/:id').post(
         })
     }
 );
+
+// Login user
+router.route('/login').post(
+    async (req, res) => {
+        try {
+            const user = user.findByCredentials(req.body.email, req.body.password)
+            if (!user) {
+                return res.status(401).send({error: 'Login failed! Check authentication credentials!'})
+            }
+
+            // Generate new token for login POST req. instance
+            const token = User.generateAuthToken();
+
+            res.send({user, token})
+        }
+        catch (error) {
+            res.status(400).send(error)
+        }
+    })
+
+// Logout user
 
 // Exporting router
 module.exports = router;
