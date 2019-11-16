@@ -1,5 +1,3 @@
-// TODO - convert all endpoints to async
-
 // Allow server to conduct CRUD operations
 
 // REGEX EXPRESSION FOR PASSWORD
@@ -19,7 +17,11 @@ const {check, validationResult} = require('express-validator')
 // Require user model
 let User = require('../models/user.model');
 
+// Import authentication middleware with JWT
+const auth = require('./auth')
+
 // Home page for user - fetch all users
+// Confirm if unnecessary or not
 router.route('/').get(
     (req, res) => {
         User.find()  // fetch users from mongodb database
@@ -44,8 +46,8 @@ router.route('/add').post(
         check('email')
             .isEmail(),
         check('password')
-            // min 8 char, at least 1 uppercase, at least 1 lowercase , one number, one special char, case insensitive
-            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "i")
+            // min 8 char, max 20 char, at least 1 uppercase, at least 1 lowercase , one number, one special char, case insensitive
+            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, "i")
     ],
     async (req, res) => {
         var validationError = validationResult(req)
@@ -54,6 +56,7 @@ router.route('/add').post(
             res.status(400).json('Error: ' + validationError);
         }
         else {
+            try {
                 const username = req.body.username;
                 const firstname = req.body.firstname;
                 const lastname = req.body.lastname;
@@ -63,29 +66,26 @@ router.route('/add').post(
                 const projects = req.body.projects;
 
                 const newUser = new User({username, firstname, lastname, email, password, position, projects});  // create new instance of user using the username
-                newUser.save()
-                    .then(() => {
-                        const token = newUser.generateAuthToken();
+                        const token = await newUser.generateAuthToken();
+                        newUser.tokens = newUser.tokens.concat({token});
+                        await newUser.save();
                         res.status(201).send({newUser, token})
-                    })
-                    .catch ((err) => {
-                        res.status(400).send("Generate token error: " + err)
-                    })
-                }
-            }
+            } catch (err) {res.status(400).send("Generate token error: " + err)}
+        }
+    }
 );
 
 
-// Fetch information about one user via id
-router.route('/:id').get(
+// Fetch information about single user; check if authenticated first
+router.get('/profile', auth,
     (req, res) => {
-        User.findById(req.params.id)
-            .then(user => res.json(user))
-            .catch(err => res.status(400).json('Error: ' + err));
-});
+        // Fetch data from logged in user profile after running middleware
+        res.send(req.user);
+    });
 
 
 // Update username of user
+// TODO - RW using JWT verification
 router.route('/:id/update/username').post(
     (req, res) => {
         User.findById(req.params.id)
@@ -101,6 +101,7 @@ router.route('/:id/update/username').post(
 );
 
 // Update firstname of user
+// TODO - RW using JWT verification
 router.route('/:id/update/firstname').post(
     (req, res) => {
         User.findById(req.params.id)
@@ -117,6 +118,7 @@ router.route('/:id/update/firstname').post(
 
 
 // Update lastname of user
+// TODO - RW using JWT verification
 router.route('/:id/update/lastname').post(
     (req, res) => {
         User.findById(req.params.id)
@@ -132,6 +134,7 @@ router.route('/:id/update/lastname').post(
 );
 
 // Update email of user
+// TODO - RW using JWT verification
 router.route('/:id/update/email').post(
     (req, res) => {
         User.findById(req.params.id)
@@ -147,11 +150,12 @@ router.route('/:id/update/email').post(
 );
 
 // Update password of user
+// TODO - RW using JWT verification
 router.route('/:id/update/password').post(
     [
         check('password')
-            // min 8 char, at least 1 uppercase, at least 1 lowercase , one number, one special char, case insensitive
-            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, "i")
+            // min 8 char, max 20 char, at least 1 uppercase, at least 1 lowercase , one number, one special char, case insensitive
+            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, "i")
     ],
     (req, res) => {
 
@@ -175,6 +179,7 @@ router.route('/:id/update/password').post(
 );
 
 // Delete information about user
+// TODO - RW using JWT verification
 router.route('/delete/:id').post(
     (req, res) => {
         User.findByIdAndDelete(req.body.id, (err, data) => {
@@ -191,22 +196,29 @@ router.route('/delete/:id').post(
 router.route('/login').post(
     async (req, res) => {
         try {
-            const user = user.findByCredentials(req.body.email, req.body.password)
+            const user = await User.findByCredentials(req.body.email, req.body.password)
+
             if (!user) {
                 return res.status(401).send({error: 'Login failed! Check authentication credentials!'})
             }
 
             // Generate new token for login POST req. instance
-            const token = User.generateAuthToken();
-
+            const token = await user.generateAuthToken(); 
             res.send({user, token})
-        }
-        catch (error) {
-            res.status(400).send(error)
-        }
+        } catch (err) {res.status(400).send(err)}
     })
 
-// Logout user
+// Logout user from current session
+router.route('/logout').post(auth,
+    async (req, res) => {
+        try {
+            req.user.tokens = req.user.tokens.filter((token) => {
+                return token.token != req.token
+            })
+            await req.user.save()
+            res.send()
+        } catch (err) {res.status(500).send(err)}
+    });
 
 // Exporting router
 module.exports = router;
