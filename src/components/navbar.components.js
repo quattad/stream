@@ -74,7 +74,7 @@ function IndexNavbar() {
         <Container>
           <div className="navbar-translate">
             <NavbarBrand 
-            href={auth.state.isAuthenticated ? ("/home") : ("/")} 
+            href={auth.state.isAuthenticated ? ("/dashboard") : ("/")} 
             id="navbar-brand">
               Stream
             </NavbarBrand>
@@ -89,10 +89,22 @@ function IndexNavbar() {
                 <NavLink href="/about"><p>About</p></NavLink>
               </NavItem>
               <NavItem>
+                <NavLink href="/" hidden={!auth.state.isAuthenticated}><p>Dashboard</p></NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink href="/register" hidden={auth.state.isAuthenticated}><p>Register</p></NavLink>
               </NavItem>
               <NavItem>
                 <NavLink href="/login" hidden={auth.state.isAuthenticated}><p>Login</p></NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/projects" hidden={!auth.state.isAuthenticated}><p>Projects</p></NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/teams" hidden={!auth.state.isAuthenticated}><p>Teams</p></NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/profile" hidden={!auth.state.isAuthenticated}><p>Profile</p></NavLink>
               </NavItem>
               <NavItem>
                 <div>
