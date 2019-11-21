@@ -3,12 +3,18 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
 
-// Import components
+// Import public components
 import Navbar from "./components/Navbar.components"
 import HomePublic from "./components/HomePublic.components"
-import HomePrivate from "./components/HomePrivate.components"
 import LoginPublic from "./components/LoginPublic.components"
 import Register from "./components/RegisterPublic.components"
+import About from "./components/About.components.js"
+
+// Import private components
+import TeamsPrivate from "./components/TeamsPrivate.components"
+import ProjectsPrivate from "./components/ProjectsPrivate.components"
+import DashboardPrivate from "./components/DashboardPrivate.components"
+import ProfilePrivate from "./components/ProfilePrivate.components"
 
 // Import auth components
 import PrivateRoute from "./components/PrivateRoute.components"
@@ -26,10 +32,14 @@ function App() {
       }}>
       <Router>
         <Route path="/" component ={Navbar} />
+        <Route exact path="/about" component={About} />
         <Route exact path="/" component={HomePublic} />
-        <PrivateRoute exact path="/home" component={HomePrivate} />
-        <Route path="/register" component={Register} />
-        <Route path="/login" component={LoginPublic} />
+        <Route exact path="/register" component={Register} />
+        <Route exact path="/login" component={LoginPublic} />
+        <PrivateRoute exact path="/dashboard" component={DashboardPrivate} />
+        <PrivateRoute exact path="/teams" component={TeamsPrivate} />
+        <PrivateRoute exact path="/projects" component={ProjectsPrivate} />
+        <PrivateRoute exact path="/profile" component={ProfilePrivate} />
       </Router>
     </AuthContext.Provider>
     );
