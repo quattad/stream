@@ -53,7 +53,7 @@ function HomePrivate() {
             }} ref={pageHeader}></div>
           <div className="content-center brand">
               <Container>
-                  <h1>About Page</h1>
+                  <h1>U A HO</h1>
               </Container>
           </div>
           <TransparentFooter />

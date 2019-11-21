@@ -22,7 +22,6 @@ import TransparentFooter from './TransparentFooter'
 function HomePrivate() {
   let pageHeader = React.createRef();
 
-
   React.useEffect(() => {
     document.body.classList.add("sidebar-collapse");
     document.body.classList.add("login-page");
@@ -53,7 +52,7 @@ function HomePrivate() {
             }} ref={pageHeader}></div>
           <div className="content-center brand">
               <Container>
-                  <h1>About Page</h1>
+                  <h1>Dashboard Screen</h1>
               </Container>
           </div>
           <TransparentFooter />
