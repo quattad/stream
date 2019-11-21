@@ -1,5 +1,6 @@
 /*eslint-disable*/
 import React from "react";
+import {Redirect} from "react-router"
 
 // reactstrap components
 import {
@@ -19,7 +20,10 @@ import {
 
 import TransparentFooter from './TransparentFooter'
 
+import {useAuthContext} from "../services/AuthReducer"
+
 function IndexHeader() {
+  const auth = useAuthContext();
   let pageHeader = React.createRef();
 
   const [firstFocus, setFirstFocus] = React.useState(false);
@@ -47,6 +51,7 @@ function IndexHeader() {
 
   return (
     <>
+    {auth.state.isAuthenticated && <Redirect to='/dashboard'> push={true} </Redirect>}
       <div className="page-header clear-filter" filter-color="blue">
         <div className="page-header-image" 
         style={{
