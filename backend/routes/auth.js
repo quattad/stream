@@ -3,9 +3,10 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user.model')
 
 const auth = async (req, res, next) => {
-    // Parse authorization header to remove 'Bearer ' string
-    const token = req.header('Authorization').replace('Bearer ', '')
-
+    
+    // Store current login token in 
+    const token = req.signedCookies.token
+    
     try {
         // Verify token signature, returns payload if verified, returns nothing if not
         const data = jwt.verify(token, process.env.JWT_KEY);
