@@ -9,7 +9,6 @@ import HomePublic from "./components/HomePublic.components"
 import HomePrivate from "./components/HomePrivate.components"
 import LoginPublic from "./components/LoginPublic.components"
 import Register from "./components/RegisterPublic.components"
-import Signup from "./components/SignupPublic.components"
 
 // Import auth components
 import PrivateRoute from "./components/PrivateRoute.components"
@@ -31,7 +30,6 @@ function App() {
         <PrivateRoute exact path="/home" component={HomePrivate} />
         <Route path="/register" component={Register} />
         <Route path="/login" component={LoginPublic} />
-        <Route path="/signup" component={Signup} />
       </Router>
     </AuthContext.Provider>
     );
