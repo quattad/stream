@@ -42,9 +42,5 @@ app.use(cookieParser(process.env.COOKIE_SECRET))
 const usersRouter = require('./routes/users')
 const projectsRouter = require('./routes/projects')
 
-// TO DEL
-const authRouter = require('./routes/mockAuth')
-
-app.use('/auth', authRouter)
 app.use('/users', usersRouter)
 app.use('/projects', projectsRouter)
