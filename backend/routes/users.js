@@ -89,9 +89,12 @@ router.route('/login').post(
             user.tokens = user.tokens.concat({token})
             await user.save()
 
+            const hours = 24
+            const expirytime = hours * 60 * 1000
+
             // Define options for permanent cookie
             const options = {
-                expires: new Date(Date.now() + 90000),  // to expire on specific date
+                expires: new Date(Date.now() + expirytime),  // to expire on specific date
                 httpOnly: true,  // prevent XSS; browser JS cannot read cookie
                 secure: false,  // ensures cookie transmitted over secure channel i.e. HTTPS
                 SameSite: true,  // prevent CSRF
@@ -112,10 +115,11 @@ router.route('/logout').post(auth,
     async (req, res) => {
         try {
             req.user.tokens = req.user.tokens.filter((token) => {
-                return token.token != req.token
+                return token.token != req.signedCookies.token
             })
             await req.user.save()
-            res.send()
+            res.clearCookie("token")
+            res.status(200).send("Session token removed")
         } catch (err) {res.status(500).send(err)}
     });
 
