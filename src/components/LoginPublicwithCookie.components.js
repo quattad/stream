@@ -5,6 +5,7 @@ import {Redirect} from "react-router"
 import {
   Button,
   Card,
+  CardHeader,
   CardBody,
   CardFooter,
   Form,
@@ -21,25 +22,24 @@ import Navbar from "./Navbar.components";
 import TransparentFooter from "./TransparentFooter";
 import axios from "axios";
 
+// authentication
+import {createCookie, readCookie, deleteCookie} from "../services/Auth"
+
 // import useAuth functions to set authState
-import {useAuthContext} from '../services/AuthReducer'
+import {useAuth} from "../services/Auth"
 
 function LoginPage() {
 
-  // Hook to fetch state object passed down from parent App component
-  // This is run everytime there is a change in SPA e.g. change in form field
-  const auth = useAuthContext()
-
   // Create state to store entered username and pw
-  const [emailState, setEmailState] = React.useState("");
+  const [usernameState, setUsernameState] = React.useState("");
   const [passwordState, setPasswordState] = React.useState("");
   
-  const [emailFocus, setEmailFocus] = React.useState(false);
+  const [usernameFocus, setUsernameFocus] = React.useState(false);
   const [passwordFocus, setPasswordFocus] = React.useState(false);
 
   // Define form save functions
-  const onChangeEmail = (e) => {
-    setEmailState(e.target.value)
+  const onChangeUsername = (e) => {
+    setUsernameState(e.target.value)
   };
   const onChangePassword = (e) => {
     setPasswordState(e.target.value)
@@ -52,34 +52,29 @@ function LoginPage() {
   };
 
   // Additional form features
-  const[fireRedirectHome, setFireRedirectHome] = React.useState(false)
-  const[fireRedirectRegister, setFireRedirectRegister] = React.useState(false)
+  const[fireRedirect, setFireRedirect] = React.useState(false)
   const[showPassword, setShowPassword] = React.useState("password")
   const[showPasswordButton, setShowPasswordButton] = React.useState("Show")
 
-  const onFireRedirectHome = (e) => {
-    setFireRedirectHome(true)
-  }
-
-  const onFireRedirectRegister = (e) => {
-    setFireRedirectRegister(true)
+  const onFireRedirect = (e) => {
+    setFireRedirect(true)
   }
 
   // Define login function
+  // TODO - authentication function in backend
   const onSubmitLogin = (e) => {
-    axios.post('http://localhost:5000/users/login', {
-      "email": emailState,
-      "password": passwordState},
-      {withCredentials: true}
-      )
+    axios.post('http://localhost:5000/login', {
+      "username": usernameState,
+      "password": passwordState
+    })
       .then(res => {
         if (!res.data.error) {
-          auth.handleLogin()
-          onFireRedirectHome(e)
+          // console.log("User" + usernameState + "successfully logged in with pw" + passwordState);
+          onFireRedirect(e)
         }
       })
       .catch(err => {
-        throw new Error({err: "onSubmitLogin error"})
+        console.log("Error: " + err)
       })
     };
 
@@ -97,8 +92,7 @@ function LoginPage() {
   return (
     <>
       <Navbar />
-      {fireRedirectHome && <Redirect to='/home'> push={true} </Redirect>}
-      {fireRedirectRegister && <Redirect to='/register'> push={true}</Redirect>}
+      {fireRedirect && <Redirect to='/login'> push={true} </Redirect>}
       <div className="page-header clear-filter" filter-color="blue">
         <div
           className="page-header-image"
@@ -121,7 +115,7 @@ function LoginPage() {
                     <InputGroup
                       className={
                         "no-border input-lg" +
-                        (emailFocus ? " input-group-focus" : "")
+                        (usernameFocus ? " input-group-focus" : "")
                       }
                     >
                       <InputGroupAddon addonType="prepend">
@@ -130,11 +124,11 @@ function LoginPage() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
-                        placeholder="Email"
+                        placeholder="Username"
                         type="text"
-                        onChange={(e)=>onChangeEmail(e)}
-                        onFocus={() => setEmailFocus(true)}
-                        onBlur={() => setEmailFocus(false)}
+                        onChange={(e)=>onChangeUsername(e)}
+                        onFocus={() => setUsernameFocus(true)}
+                        onBlur={() => setUsernameFocus(false)}
                       ></Input>
                     </InputGroup>
                     <InputGroup
@@ -167,6 +161,33 @@ function LoginPage() {
                         }}>
                           {(showPasswordButton) ? "Show Password":"Hide Password"}
                       </Button>
+                      <Button 
+                        outline 
+                        className="btn-round"
+                        size="md"
+                        onClick={() => {
+                          createCookie()
+                        }}>
+                          Create Cookie
+                      </Button>
+                      <Button 
+                        outline 
+                        className="btn-round"
+                        size="md"
+                        onClick={() => {
+                          readCookie()
+                        }}>
+                          Read Cookie
+                      </Button>
+                      <Button 
+                        outline 
+                        className="btn-round"
+                        size="md"
+                        onClick={() => {
+                          deleteCookie()
+                        }}>
+                          Delete Cookie
+                      </Button>
                     </div>
                   </CardBody>
                   <CardFooter className="text-center">
@@ -186,7 +207,7 @@ function LoginPage() {
                       <a
                       className="link"
                       href="/register"
-                      onClick={() => onFireRedirectRegister()}
+                      onClick={() => "window.location='/register'"}
                       >
                         Register
                         </a></h6>

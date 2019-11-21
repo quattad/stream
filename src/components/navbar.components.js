@@ -1,15 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+
 // reactstrap components
-import {Button, Collapse, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledDropdown, NavbarBrand,Navbar, NavItem, NavLink, Nav, Container, UncontrolledTooltip
-} from "reactstrap";
+import {Collapse, NavbarBrand,Navbar, NavItem, NavLink, Nav, Container} from "reactstrap";
+
+// Import auth object
+import {useAuthContext} from "../services/AuthReducer"
 
 function IndexNavbar() {
+  const auth = useAuthContext(); 
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [collapseOpen, setCollapseOpen] = React.useState(false);
 
-  // useEffect hook tells React that component needs to do something after render; remembers fn and executes it after DOM updates
-  // By default will run after every render
+  // useEffect hook tells React that component needs to do something after render; 
+  // remembers fn and executes it after DOM updates; By default will run after every render
   React.useEffect(() => {
     const updateNavbarColor = () => {
       if (
@@ -31,15 +34,12 @@ function IndexNavbar() {
   });
   return (
     <>
-      {collapseOpen ? (
-        <div
-          id="bodyClick"
-          onClick={() => {
+      {collapseOpen ? 
+      (<div id="bodyClick" onClick={() => {
             document.documentElement.classList.toggle("nav-open");
             setCollapseOpen(false);
-          }}
-        />
-      ) : null}
+          }}/>) 
+          : null}
       <Navbar 
       className={"navbar-dark fixed-top " + 
       navbarColor} 
@@ -48,7 +48,7 @@ function IndexNavbar() {
         <Container>
           <div className="navbar-translate">
             <NavbarBrand 
-            href="/" 
+            href={auth.state.isAuthenticated ? ("/home") : ("/")} 
             id="navbar-brand">
               Stream
             </NavbarBrand>
@@ -60,31 +60,16 @@ function IndexNavbar() {
           <Collapse className="justify-content-end" isOpen={collapseOpen} navbar>
             <Nav navbar>
               <NavItem>
-                <NavLink
-                  href="#about"
-                  onClick={e => {
-                    e.preventDefault();
-                    document
-                      .getElementById("download-section")
-                      .scrollIntoView();
-                  }}
-                >
-                  <p>About</p>
-                </NavLink>
+                <NavLink href="/about"><p>About</p></NavLink>
               </NavItem>
               <NavItem>
-                <NavLink
-                  href="/register"
-                >
-                  <p>Register</p>
-              </NavLink>
+                <NavLink href="/register" hidden={auth.state.isAuthenticated}><p>Register</p></NavLink>
               </NavItem>
               <NavItem>
-                <NavLink
-                  href="/login"
-                >
-                  <p>Login</p>
-              </NavLink>
+                <NavLink href="/login" hidden={auth.state.isAuthenticated}><p>Login</p></NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink onClick={() => auth.handleLogout()} hidden={!auth.state.isAuthenticated}><p>Logout</p></NavLink>
               </NavItem>
               </Nav>
           </Collapse>

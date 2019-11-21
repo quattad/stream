@@ -22,7 +22,6 @@ import TransparentFooter from './TransparentFooter'
 function HomePrivate() {
   let pageHeader = React.createRef();
 
-  const [firstFocus, setFirstFocus] = React.useState(false);
 
   React.useEffect(() => {
     document.body.classList.add("sidebar-collapse");

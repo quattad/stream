@@ -78,7 +78,7 @@ const LoginPage = () => {
     axios.post('http://localhost:5000/users/add', user)
       .then(res => {
         if (!res.data.error) {
-          console.log('React - User added successfully ')
+          console.log('React - User added successfully')
           onFireRedirect(e)
         } else {
           console.log("Error: " + res.data.error)
@@ -111,7 +111,7 @@ const LoginPage = () => {
   return (
     <>
       <Navbar />
-      {fireRedirect && <Redirect to='/login'> push={true} </Redirect>}
+      {fireRedirect && <Redirect to='/'> push={true} </Redirect>}
       <div 
         className="page-header clear-filter" 
         filter-color="blue">

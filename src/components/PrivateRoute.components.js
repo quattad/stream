@@ -2,19 +2,18 @@
 
 import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
-import {useAuth} from '../services/Auth'
+import {useAuthContext} from '../services/AuthReducer'
 
 const PrivateRoute = ({
     component: Component, ...rest
 }) => {
-    const isAuthenticated = useAuth(); // pull value that is stored in AuthContext state in services/Auth.js
-
+    const auth = useAuthContext(); // pull object that is passed from Provider to Consumer
     return(
         <Route 
         {...rest} 
         render = {
             (props) => 
-            isAuthenticated ? (<Component {...props}/>) : (<Redirect to="/login" />)
+            auth.state.isAuthenticated ? (<Component {...props}/>) : (<Redirect to="/login" />)
         } />
     )
 }
