@@ -97,7 +97,7 @@ function LoginPage() {
   return (
     <>
       <Navbar />
-      {fireRedirectHome && <Redirect to='/home'> push={true} </Redirect>}
+      {fireRedirectHome && <Redirect to='/dashboard'> push={true} </Redirect>}
       {fireRedirectRegister && <Redirect to='/register'> push={true}</Redirect>}
       <div className="page-header clear-filter" filter-color="blue">
         <div
