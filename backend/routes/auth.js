@@ -3,11 +3,10 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user.model')
 
 const auth = async (req, res, next) => {
-    
-    // Store current login token in 
-    const token = req.signedCookies.token
-    
     try {
+        // Store current login token in 
+        const token = req.signedCookies.token
+        
         // Verify token signature, returns payload if verified, returns nothing if not
         const data = jwt.verify(token, process.env.JWT_KEY);
         const user = await User.findOne({'_id': data.id, 'tokens.token':token})
