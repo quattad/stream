@@ -1,15 +1,39 @@
 import React from "react";
+import {Redirect} from "react-router";
 
 // reactstrap components
-import {Collapse, NavbarBrand,Navbar, NavItem, NavLink, Nav, Container} from "reactstrap";
+import {Button, Collapse, NavbarBrand, Navbar, NavItem, NavLink, Nav, Container} from "reactstrap";
 
 // Import auth object
 import {useAuthContext} from "../services/AuthReducer"
+import axios from "axios";
 
 function IndexNavbar() {
   const auth = useAuthContext(); 
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [collapseOpen, setCollapseOpen] = React.useState(false);
+
+  // Set redirect state if user logs out
+  const [fireRedirectHome, setFireRedirectHome] = React.useState(false)
+
+  const onFireRedirectHome = (e) => {
+    setFireRedirectHome(true)
+  }
+
+  // Define logout function
+  const onSubmitLogout = (e) => {
+    axios.post('http://localhost:5000/users/logout', {}, {
+      withCredentials: true
+    })
+      .then((res) => {
+        if (!res.data.error) {
+          auth.handleLogout()
+          onFireRedirectHome(e)
+        }
+      })
+      .catch(err => {throw new Error(err)})
+  }
+    
 
   // useEffect hook tells React that component needs to do something after render; 
   // remembers fn and executes it after DOM updates; By default will run after every render
@@ -32,8 +56,10 @@ function IndexNavbar() {
       window.removeEventListener("scroll", updateNavbarColor);
     };
   });
+
   return (
     <>
+    {fireRedirectHome && <Redirect to='/'> push={true} </Redirect>}
       {collapseOpen ? 
       (<div id="bodyClick" onClick={() => {
             document.documentElement.classList.toggle("nav-open");
@@ -69,7 +95,9 @@ function IndexNavbar() {
                 <NavLink href="/login" hidden={auth.state.isAuthenticated}><p>Login</p></NavLink>
               </NavItem>
               <NavItem>
-                <NavLink onClick={() => auth.handleLogout()} hidden={!auth.state.isAuthenticated}><p>Logout</p></NavLink>
+                <div>
+                  <Button className="btn-round" outline size="sm" onClick={() => onSubmitLogout()} hidden={!auth.state.isAuthenticated}><p>Logout</p></Button>
+              </div>
               </NavItem>
               </Nav>
           </Collapse>
