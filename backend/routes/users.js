@@ -21,7 +21,6 @@ let User = require('../models/user.model');
 const auth = require('./auth')
 
 // Home page for user - fetch all users
-// Confirm if unnecessary or not
 router.route('/').get(
     (req, res) => {
         User.find()  // fetch users from mongodb database
@@ -30,7 +29,7 @@ router.route('/').get(
     }
 );
 
-// Create user
+// Register user
 router.route('/add').post(
     [
         check('username')
@@ -75,9 +74,53 @@ router.route('/add').post(
     }
 );
 
+// Login user
+router.route('/login').post(
+    async (req, res) => {
+        try {
+            const user = await User.findByCredentials(req.body.email, req.body.password)
+            if (!user) {
+                return res.status(401).send({error: 'Login failed! Check authentication credentials!'})
+            }
+
+            // Generate new token for login POST req. instance, append to user 
+            // token array and save
+            const token = await user.generateAuthToken();
+            user.tokens = user.tokens.concat({token})
+            await user.save()
+
+            // Define options for permanent cookie
+            const options = {
+                expires: new Date(Date.now() + 90000),  // to expire on specific date
+                httpOnly: true,  // prevent XSS; browser JS cannot read cookie
+                secure: false,  // ensures cookie transmitted over secure channel i.e. HTTPS
+                SameSite: true,  // prevent CSRF
+                signed: true
+            }
+
+            res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+            res.header('Access-Control-Allow-Credentials', true);
+            res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+            res.cookie("token", token, options)
+            res.send()
+
+        } catch (err) {res.status(400).send(err)}
+    })
+
+// Logout user from current session
+router.route('/logout').post(auth,
+    async (req, res) => {
+        try {
+            req.user.tokens = req.user.tokens.filter((token) => {
+                return token.token != req.token
+            })
+            await req.user.save()
+            res.send()
+        } catch (err) {res.status(500).send(err)}
+    });
 
 // Fetch information about single user; check if authenticated first
-router.get('/profile', auth,
+router.route('/profile').get(auth,
     (req, res) => {
         // Fetch data from logged in user profile after running middleware
         res.send(req.user);
@@ -191,34 +234,6 @@ router.route('/delete/:id').post(
         })
     }
 );
-
-// Login user
-router.route('/login').post(
-    async (req, res) => {
-        try {
-            const user = await User.findByCredentials(req.body.email, req.body.password)
-
-            if (!user) {
-                return res.status(401).send({error: 'Login failed! Check authentication credentials!'})
-            }
-
-            // Generate new token for login POST req. instance
-            const token = await user.generateAuthToken(); 
-            res.send({user, token})
-        } catch (err) {res.status(400).send(err)}
-    })
-
-// Logout user from current session
-router.route('/logout').post(auth,
-    async (req, res) => {
-        try {
-            req.user.tokens = req.user.tokens.filter((token) => {
-                return token.token != req.token
-            })
-            await req.user.save()
-            res.send()
-        } catch (err) {res.status(500).send(err)}
-    });
 
 // Exporting router
 module.exports = router;
