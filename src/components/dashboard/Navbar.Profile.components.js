@@ -7,9 +7,10 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Button, Collapse,
 function NavbarProfile () {
     // Define functions, hooks
 
-    return {
-        <React.Fragment></>
-    }
+    return (
+        <>
+        </>
+    )
 };
 
-export default NavbarProfile
+export default NavbarProfile;
