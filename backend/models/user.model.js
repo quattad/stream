@@ -64,29 +64,6 @@ const userSchema = new Schema(
     }
 );
 
-// Create Mongoose middleware to hash password before saving to database
-// Note: Passwords are only hashed if document is saved to database! If retrieved from database, still in cleartext
-// Do not define anon functions. Will affect scope of const user = this to refer to anon function instead of User instance
-// userSchema.pre('save', function (next) {
-//     // Salt prevents rainbow table attacks & brute force attacks; determines how many routes/iterations of key setup phase
-//     SALT_WORK_FACTOR = 10;
-//     const user = this;
-
-//     // Generate a salt
-//     bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-//         if (err) return next(err);
-
-//         // Hash password with new salt
-//         bcrypt.hash(user.password, salt, function (err, hash) {
-//             if (err) return next(err);
-
-//             // Replace cleartext password with hashed password
-//             user.password = hash;
-//             next();
-//         })
-//     })
-// });
-
 // Hashing function that runs before every user save
 userSchema.pre('save', function (next) {
     const user = this;
@@ -117,19 +94,37 @@ userSchema.methods.comparePassword = function (candidatePassword, actualPassword
 
 // Search for user by email and password
 userSchema.statics.findByCredentials = async (email, password) => {
+    
+    if (email === "") {
+        throw new Error ("EMAIL_FIELD_EMPTY")
+    } else if (password === "") {
+        throw new Error ("PASSWORD_FIELD_EMPTY")
+    }
+
     try {
         const user = await User.findOne({"email": email})
+        
         if (!user) {
-            throw new Error({error: 'Invalid email'})
+            throw new Error("USER_NOT_FOUND")
         }
 
-        const isPasswordMatch = await bcrypt.compare(password, user.password.toString())
-        
-        if (!isPasswordMatch) {
-            throw new Error({error: 'Invalid password'})
-        } else {return user}
+        try {
+            const isPasswordMatch = await bcrypt.compare(password, user.password.toString())
+            
+            if (!isPasswordMatch) {
+                throw new Error("PASSWORD_DOES_NOT_MATCH")
+            } else {
+                return user
+            }
+
+        } catch (err) {
+            /** Error Handling for password comparison bcrypt.compare */
+            throw err
+        }
+
     } catch (err) {
-        throw new Error({error: "Invalid user or password"})
+        /** Error Handling for finding user User.findOne() */
+        throw err
     }
 }
 
@@ -137,14 +132,16 @@ userSchema.statics.findByCredentials = async (email, password) => {
 userSchema.methods.generateAuthToken = async function generateAuthToken() {
     // Generate auth token for user
     const user = this;
-    const token = jwt.sign(
-        {id: user._id}, 
-        process.env.JWT_KEY, 
-        {
-            expiresIn: '24h'
-        })
+    const token = jwt.sign({
+        id: user._id
+    },
+    process.env.JWT_KEY, 
+    {
+        expiresIn: '24h'
+    })
+    
     return token
-    }
+}
 
     
 const User = mongoose.model('User', userSchema);
