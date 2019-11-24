@@ -129,11 +129,26 @@ router.route('/logout').post(auth,
             })
             await req.user.save()
             res.clearCookie("token")
-            res.status(200).send("Session token removed")
+            res.status(200).send("SESSION_TOKEN_REMOVED")
         } catch (err) {
             res.status(500).send({"err": err})
         }
     });
+
+// Check if cookie exists
+router.route('/checkauth').get(auth,
+    async (req, res) => {
+        try {
+            if (req.user && req.token) {
+                res.status(200).send("COOKIE_EXISTS")
+            }
+        } catch (err) {
+            res.status(401).send({
+                "error": "ValidationError",
+                "description": err.message
+            })
+        }
+    })
 
 // Fetch information about single user; check if authenticated first
 router.route('/profile').get(auth,
