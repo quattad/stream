@@ -31,7 +31,7 @@ function App() {
       handleLogout: () => dispatch({type: 'logout'})
       }}>
       <Router>
-        <Route path="/" component ={Navbar} />
+        <Route path="/" component={Navbar} />
         <Route exact path="/about" component={About} />
         <Route exact path="/" component={HomePublic} />
         <Route exact path="/register" component={Register} />
