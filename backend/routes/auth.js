@@ -12,12 +12,16 @@ const auth = async (req, res, next) => {
         const user = await User.findOne({'_id': data.id, 'tokens.token':token})
         
         if (!user) {
-            throw new Error ({error: 'User not found with specified token.'})
+            throw new Error ('USER_NOT_FOUND_WITH_SPECIFIED_TOKEN')
         }
         req.user = user
         req.token = token
         next();
-    } catch (error) { res.status(401).send({error:'Not authorized to access this resource'})}
+    } catch (err) { 
+        return res.status(401).send({
+            "error": "ValidationError",
+            "description": err})
+        }
 }
 
 module.exports = auth;
