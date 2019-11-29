@@ -7,7 +7,7 @@ import {useAuthContext} from '../services/AuthReducer'
 const PrivateRoute = ({
     component: Component, ...rest
 }) => {
-    const auth = useAuthContext(); // pull object that is passed from Provider to Consumer
+    const auth = useAuthContext();
     return(
         <Route 
         {...rest} 

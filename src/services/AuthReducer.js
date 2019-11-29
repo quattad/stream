@@ -1,4 +1,5 @@
 import {createContext, useContext} from 'react';
+import axios from 'axios'
 
 // Creates AuthContext object that has 2 components - Provider and Consumer
 // Use for parent class App.js
@@ -30,7 +31,48 @@ export const authReducer = (state, action) => {
     }
   };
 
-  // Set initial state for reducer
-  export const authInitialState = {
-    isAuthenticated: localStorage.getItem("authState") ? (true) : (false)
+export const authInitialState = {
+  /**
+   * Defines initial state for isAuthenticated context that will be used for all child components of 
+   * App.js
+   */
+  isAuthenticated: localStorage.getItem("authState") ? (true) : (false)
+}
+
+// Define function to check if current user is authenticated
+export const checkAuth = async (auth) => {
+  /**
+   * Takes in a context object created from using useAuthContext hook in function
+   * Sends a GET request to server with cookie and verifies that token is correct
+   * Sets localStorage authState to false if user does not possess token or if any error is thrown
+   * during request 
+   */
+  try {
+    const res = await axios.get('http://localhost:5000/users/checkauth', {
+      withCredentials:true
+    });
+
+    if (res.data.error) {
+      throw new Error(res.data.error)
+    }
+  } catch (err) {
+    console.log(err)
+    auth.handleLogout()
   }
+}
+
+export const fetchUserProfile = async (auth) => {
+  try {
+    const res = await axios.get("http://localhost:5000/users/profile", 
+    {
+      withCredentials: true
+    })
+    
+    if (!res.data.error) {
+      return res.data
+    }
+  } catch (err) {
+    console.log(err)
+    auth.handleLogout()   
+  }
+}

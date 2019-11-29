@@ -8,31 +8,13 @@ import {Button, Collapse, NavbarBrand, Navbar, NavItem, NavLink, Nav, Container}
 import {useAuthContext} from "../services/AuthReducer"
 import axios from "axios";
 
+// Import profile section of navbar
+import NavbarProfile from "./dashboard/Navbar.Profile.components"
+
 function IndexNavbar() {
   const auth = useAuthContext(); 
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [collapseOpen, setCollapseOpen] = React.useState(false);
-
-  // Set redirect state if user logs out
-  const [fireRedirectHome, setFireRedirectHome] = React.useState(false)
-
-  const onFireRedirectHome = (e) => {
-    setFireRedirectHome(true)
-  }
-
-  // Define logout function
-  const onSubmitLogout = (e) => {
-    axios.post('http://localhost:5000/users/logout', {}, {
-      withCredentials: true
-    })
-      .then((res) => {
-        if (!res.data.error) {
-          auth.handleLogout()
-          onFireRedirectHome(e)
-        }
-      })
-      .catch(err => {throw new Error(err)})
-  }
     
 
   // useEffect hook tells React that component needs to do something after render; 
@@ -59,7 +41,6 @@ function IndexNavbar() {
 
   return (
     <>
-    {fireRedirectHome && <Redirect to='/'> push={true} </Redirect>}
       {collapseOpen ? 
       (<div id="bodyClick" onClick={() => {
             document.documentElement.classList.toggle("nav-open");
@@ -104,12 +85,7 @@ function IndexNavbar() {
                 <NavLink href="/teams" hidden={!auth.state.isAuthenticated}><p>Teams</p></NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/profile" hidden={!auth.state.isAuthenticated}><p>Profile</p></NavLink>
-              </NavItem>
-              <NavItem>
-                <div>
-                  <Button className="btn-round" outline size="sm" onClick={() => onSubmitLogout()} hidden={!auth.state.isAuthenticated}><p>Logout</p></Button>
-              </div>
+                <NavbarProfile></NavbarProfile>
               </NavItem>
               </Nav>
           </Collapse>

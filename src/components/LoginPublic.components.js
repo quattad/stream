@@ -2,18 +2,7 @@ import React from "react";
 import {Redirect} from "react-router"
 
 // reactstrap components
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Container,
-  Col
+import {Button,Card,CardBody,CardFooter,Form,Input,InputGroupAddon,InputGroupText,InputGroup,Container,Col
 } from "reactstrap";
 
 // core components
@@ -66,22 +55,29 @@ function LoginPage() {
   }
 
   // Define login function
-  const onSubmitLogin = (e) => {
-    axios.post('http://localhost:5000/users/login', {
-      "email": emailState,
-      "password": passwordState},
-      {withCredentials: true}
-      )
-      .then(res => {
-        if (!res.data.error) {
-          auth.handleLogin()
-          onFireRedirectHome(e)
-        }
-      })
-      .catch(err => {
-        throw new Error({err: "onSubmitLogin error"})
-      })
-    };
+  const onSubmitLogin = async (e) => {
+    try {
+      const res = await axios.post('http://localhost:5000/users/login', {
+        "email": emailState,
+        "password": passwordState
+      },
+      {
+        withCredentials: true
+      });
+
+      if (!res.data.error) {
+        auth.handleLogin();
+        onFireRedirectHome(e);
+
+    }} catch (err) {
+    /** Error handling for login issues */
+    if (err.response.data.description === "EMAIL_FIELD_EMPTY") {}
+    else if (err.response.data.description === "PASSWORD_FIELD_EMPTY") {}
+    else if (err.response.data.description === "USER_NOT_FOUND") {}
+    else if (err.response.data.description === "PASSWORD_DOES_NOT_MATCH") {}
+    else {throw new Error("Uncaught ")}
+  }
+};
 
   React.useEffect(() => {
     document.body.classList.add("login-page");
@@ -111,19 +107,14 @@ function LoginPage() {
             <Col className="ml-auto mr-auto" md="4">
               <Card className="card-login card-plain">
                 <Form action="" className="form" method="">
-                <Container>
-                  <h3 
-                    className="h3 seo">
-                      Welcome back to Stream.
-                  </h3>
+                  <Container>
+                    <h3 className="h3 seo">Welcome back to Stream.</h3>
                   </Container>
                   <CardBody>
                     <InputGroup
                       className={
-                        "no-border input-lg" +
-                        (emailFocus ? " input-group-focus" : "")
-                      }
-                    >
+                        "no-border input-lg" + (emailFocus ? " input-group-focus" : "")
+                      }>
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="now-ui-icons users_circle-08"></i>
@@ -171,9 +162,9 @@ function LoginPage() {
                   </CardBody>
                   <CardFooter className="text-center">
                     <Button
+                      outline
                       block
                       className="btn-round"
-                      color="info"
                       onClick={(e) => {
                         onSubmitLogin(e)
                       }}
