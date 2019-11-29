@@ -170,7 +170,7 @@ router.route('/update').post(auth,
             req.user.firstname = req.body.firstname
             req.user.lastname = req.body.lastname
             await req.user.save()
-            res.status(204).json({"message": "Profile updated successfully"})
+            res.status(204).send('Profile updated successfully')
         } catch (err) {
             res.status(400).send({"err":err})
         }
