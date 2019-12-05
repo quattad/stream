@@ -16,6 +16,7 @@ import TeamsPrivate from "./components/TeamsPrivate.components"
 import ProjectsPrivate from "./components/ProjectsPrivate.components"
 import DashboardPrivate from "./components/DashboardPrivate.components"
 import ProfilePrivate from "./components/ProfilePrivate.components"
+import AddNewProject from "./components/AddNewProject.components"
 
 // Import auth components
 import PrivateRoute from "./components/PrivateRoute.components"
@@ -42,6 +43,7 @@ function App() {
         <PrivateRoute exact path="/teams" component={TeamsPrivate} />
         <PrivateRoute exact path="/projects" component={ProjectsPrivate} />
         <PrivateRoute exact path="/profile" component={ProfilePrivate} />
+        <PrivateRoute exact path="/projects/add" component={AddNewProject} />
       </Router>
     </AuthContext.Provider>
     );
