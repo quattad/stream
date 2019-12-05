@@ -1,27 +1,10 @@
-/*eslint-disable*/
 import React from "react";
-
-// reactstrap components
-import {
-    Button,
-    Container,
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    Form,
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
-    Col
-} from "reactstrap";
+import { Container } from "reactstrap";
 
 import TransparentFooter from './TransparentFooter'
 
 function HomePrivate() {
   let pageHeader = React.createRef();
-
 
   React.useEffect(() => {
     document.body.classList.add("sidebar-collapse");
@@ -31,17 +14,15 @@ function HomePrivate() {
     if (window.innerWidth > 991) {
       const updateScroll = () => {
         let windowScrollTop = window.pageYOffset / 3;
-        pageHeader.current.style.transform =
-          "translate3d(0," + windowScrollTop + "px,0)";
+        pageHeader.current.style.transform = "translate3d(0," + windowScrollTop + "px,0)";
       };
       window.addEventListener("scroll", updateScroll);
       return function cleanup() {
         window.removeEventListener("scroll", updateScroll);
-
-    document.body.classList.add("sidebar-collapse");
-    document.documentElement.classList.remove("nav-open");
+        document.body.classList.add("sidebar-collapse");
+        document.documentElement.classList.remove("nav-open");
       };
-    }
+    };
   });
 
   return (
