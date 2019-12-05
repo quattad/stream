@@ -1,68 +1,64 @@
 import React from "react";
-import {Redirect} from "react-router";
+import {Collapse, NavbarBrand, Navbar, NavItem, NavLink, Nav, Container} from "reactstrap";
 
-// reactstrap components
-import {Button, Collapse, NavbarBrand, Navbar, NavItem, NavLink, Nav, Container} from "reactstrap";
-
-// Import auth object
-import {useAuthContext} from "../services/AuthReducer"
-import axios from "axios";
-
-// Import profile section of navbar
+// Import child components
 import NavbarProfile from "./dashboard/Navbar.Profile.components"
 
-function IndexNavbar() {
+// Import authContext
+import {useAuthContext, fetchUserProfile} from "../services/AuthReducer"
+
+// Create Navbar context for child components
+export const NavbarContext = React.createContext();
+export const useNavbarContext = () => {return React.useContext(NavbarContext)}
+
+function IndexNavbar () {
   const auth = useAuthContext(); 
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [collapseOpen, setCollapseOpen] = React.useState(false);
-    
 
-  // useEffect hook tells React that component needs to do something after render; 
-  // remembers fn and executes it after DOM updates; By default will run after every render
+  // Set user state for Navbar
+  const [userState, setUserState] = React.useState({
+    'username':"",
+  })
+
   React.useEffect(() => {
-    const updateNavbarColor = () => {
-      if (
-        document.documentElement.scrollTop > 399 ||
-        document.body.scrollTop > 399
-      ) {
-        setNavbarColor("");
-      } else if (
-        document.documentElement.scrollTop < 400 ||
-        document.body.scrollTop < 400
-      ) {
-        setNavbarColor("navbar-transparent");
+    // Fetch username of currently logged in user
+    (async () => {
+      if (auth.state.isAuthenticated) {
+        const user = await fetchUserProfile(auth);
+        setUserState({'username':user.username})
       }
+    })();
+
+    const updateNavbarColor = () => {
+      if (document.documentElement.scrollTop > 399 || document.body.scrollTop > 399) {
+        setNavbarColor("");
+      } else if (document.documentElement.scrollTop < 400 || document.body.scrollTop < 400) {
+        setNavbarColor("navbar-transparent");
+      }};
+      
+      window.addEventListener("scroll", updateNavbarColor);
+      return function cleanup() {
+        window.removeEventListener("scroll", updateNavbarColor);
     };
-    window.addEventListener("scroll", updateNavbarColor);
-    return function cleanup() {
-      window.removeEventListener("scroll", updateNavbarColor);
-    };
-  });
+
+  }, [auth]);
 
   return (
     <>
-      {collapseOpen ? 
-      (<div id="bodyClick" onClick={() => {
-            document.documentElement.classList.toggle("nav-open");
-            setCollapseOpen(false);
-          }}/>) 
-          : null}
-      <Navbar 
-      className={"navbar-dark fixed-top " + 
-      navbarColor} 
-      expand="lg" 
-      color="info">
+    <NavbarContext.Provider value ={{userState}}>
+      {collapseOpen ? (<div id="bodyClick" onClick={() => {
+        document.documentElement.classList.toggle("nav-open");
+        setCollapseOpen(false);
+      }}/>) : null}
+        <Navbar className={"navbar-dark fixed-top " + navbarColor} expand="lg" color="info">
         <Container>
           <div className="navbar-translate">
-            <NavbarBrand 
-            href={auth.state.isAuthenticated ? ("/dashboard") : ("/")} 
-            id="navbar-brand">
-              Stream
-            </NavbarBrand>
-            <button className="navbar-toggler navbar-toggler-icon" onClick={() => {document.documentElement.classList.toggle("nav-open"); setCollapseOpen(!collapseOpen);}}
-            aria-expanded={collapseOpen}
-            type="button">
-            </button>
+            <NavbarBrand href={auth.state.isAuthenticated ? ("/dashboard") : ("/")} id="navbar-brand">Stream</NavbarBrand>
+            <button className="navbar-toggler navbar-toggler-icon" onClick={() => {
+              document.documentElement.classList.toggle("nav-open"); 
+              setCollapseOpen(!collapseOpen);
+            }} aria-expanded={collapseOpen} type="button"></button>
           </div>
           <Collapse className="justify-content-end" isOpen={collapseOpen} navbar>
             <Nav navbar>
@@ -91,6 +87,7 @@ function IndexNavbar() {
           </Collapse>
         </Container>
       </Navbar>
+      </NavbarContext.Provider>
     </>
   );
 }
