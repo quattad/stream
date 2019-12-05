@@ -51,7 +51,6 @@ router.route('/add').post(
                 res.status(201).send({newUser, token})
             } catch (err) {
                 console.log(err)
-
                 res.status(err.status).send({
                     "error": err.code,
                     "description": err.message
@@ -131,7 +130,10 @@ router.route('/logout').post(auth,
             res.clearCookie("token")
             res.status(200).send("SESSION_TOKEN_REMOVED")
         } catch (err) {
-            res.status(500).send({"err": err})
+            res.status(500).send({
+                "err":"TokenError",
+                "description": err.message
+            })
         }
     });
 
@@ -154,13 +156,14 @@ router.route('/checkauth').get(auth,
 router.route('/profile').get(auth,
     async (req, res) => {
         try {
-            // Fetch data from logged in user profile after running middleware
-            res.send(req.user);
+            res.send(req.user)
         } catch (err) {
-            res.status(400).send({"err": err})
+            res.status(400).send({
+                "err":"ValidationError", 
+                "description": err.message
+            })
         }
     });
-
 
 // Update all fields except for password
 router.route('/update').post(auth, 
@@ -172,7 +175,10 @@ router.route('/update').post(auth,
             await req.user.save()
             res.status(204).send('Profile updated successfully')
         } catch (err) {
-            res.status(400).send({"err":err})
+            res.status(400).send({
+                "err": "UpdateError",
+                "description": err.message
+            })
         }
     })
 
