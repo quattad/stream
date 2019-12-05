@@ -17,7 +17,7 @@ const projectSchema = new Schema(
         creator: {
             type: String,
         },
-        users: {
+        members: {
             type: Array,
             required: true,
             minlength: 1
