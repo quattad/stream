@@ -1,10 +1,7 @@
-/*eslint-disable*/
 import React from "react";
-
-// reactstrap components
 import {Container} from "reactstrap";
 
-// Import child components for Dashboard
+// Import child components
 import WelcomeText from "./dashboard/WelcomeText.components"
 import ProjectsTable from "./dashboard/ProjectsTable.components"
 import TeamTable from "./dashboard/TeamTable.components"
@@ -31,20 +28,20 @@ function DashboardPrivate() {
   React.useEffect(() => {
     checkAuth(auth);
     (async () => {
-      const user = await fetchUserProfile(auth)
+      const user = await fetchUserProfile(auth);
       setUserState({
         'username':user.username,
         'firstname':user.firstname,
         'lastname':user.lastname,
         'position':user.position,
         'projects':user.projects
-      })
+      });
     })();
 
     document.body.classList.add("sidebar-collapse");
     document.body.classList.add("login-page");
     document.documentElement.classList.remove("nav-open");
-  }, []);
+  }, [auth]);
 
   return (
     <>
