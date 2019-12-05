@@ -1,23 +1,8 @@
-/*eslint-disable*/
 import React from "react";
 import {Redirect} from "react-router"
+import { Button, Container, Card, CardFooter, Form, Col } from "reactstrap";
 
-// reactstrap components
-import {
-    Button,
-    Container,
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    Form,
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
-    Col
-} from "reactstrap";
-
+// Import child components
 import TransparentFooter from './TransparentFooter'
 
 import {useAuthContext} from "../services/AuthReducer"
@@ -25,8 +10,6 @@ import {useAuthContext} from "../services/AuthReducer"
 function IndexHeader() {
   const auth = useAuthContext();
   let pageHeader = React.createRef();
-
-  const [firstFocus, setFirstFocus] = React.useState(false);
 
   React.useEffect(() => {
     document.body.classList.add("sidebar-collapse");
