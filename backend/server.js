@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser')
-const path = require('path')
 
 // Allow connection to db server
 const mongoose = require('mongoose');
@@ -29,18 +28,14 @@ connection.once('open', () => {
     console.log("MongoDB database connection established successfully!")
 });
 
-// Apply Access Control Allow Origin header to all responses from server
-// app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Origin', '*')
-//     next();
-// })
-
 // Configure secret key for signing cookies 
 app.use(cookieParser(process.env.COOKIE_SECRET))
 
 // Import and use routers
 const usersRouter = require('./routes/users')
 const projectsRouter = require('./routes/projects')
+const featuresRouter = require('./routes/features')
 
 app.use('/users', usersRouter)
 app.use('/projects', projectsRouter)
+app.use('/features', featuresRouter)
