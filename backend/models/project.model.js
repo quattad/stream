@@ -1,6 +1,54 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
+const tasks = new Schema({
+    name: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 10
+    },
+    description: {
+        type: String,
+        maxlength: 20
+    },
+    startDate: {
+        type: Date,
+        required: true
+    },
+    endDate: {
+        type: Date,
+        required: true
+    }
+});
+
+const features = new Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 5,
+        maxlength: 30
+    },
+    description: {
+        type: String,
+        maxlength: 100
+    },
+    creator: {
+        type: String,
+    },
+    members: {
+        type: Array,
+    },
+    startDate: {
+        type: Date,
+    },
+    endDate: {
+        type: Date,
+    },
+    tasks: [tasks]
+});
+
 const projectSchema = new Schema(
     {
         name: {
@@ -12,7 +60,7 @@ const projectSchema = new Schema(
         },
         description: {
             type: String,
-            maxlength: 100
+            maxlength: 100,
         },
         creator: {
             type: String,
@@ -27,14 +75,8 @@ const projectSchema = new Schema(
             minlength: 1,
             maxlength: 10
         },
-        features: {
-            type: Array
-        }
-    },
-    {
-        timestamps: true,
-    }
-);
+        features: [features]
+    });
 
 const Project = mongoose.model('Project', projectSchema);
 
