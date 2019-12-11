@@ -12,24 +12,23 @@ function ProjectsTableRow (props) {
 
     const onDeleteProject = async () => {
         try {
-        const res = await axios.post('http://localhost:5000/projects/delete',
-        {
-            "name": props.project
-        },
-        {
-            withCredentials: true
-        });
-
-        if (!res.data.error) {
-            onChangeDeleteButton();
+            const res = await axios.post('http://localhost:5000/projects/delete',
+            {
+                "name": props.project
+            },
+            {
+                withCredentials: true
+            });
+            
+            if (!res.data.error) {
+                onChangeDeleteButton();
+                onFireReload();
+            }
+        } catch (err) {
+            // Add Alert here
             onFireReload();
         }
-    } catch (err) {
-        // Add Alert here
-        console.log(err)
-        onFireReload();
-    }
-};
+    };
 
     return (
     <>

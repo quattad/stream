@@ -30,11 +30,11 @@ function DashboardPrivate() {
     (async () => {
       const user = await fetchUserProfile(auth);
       setUserState({
-        'username':user.username,
-        'firstname':user.firstname,
-        'lastname':user.lastname,
-        'position':user.position,
-        'projects':user.projects
+        'username': user.username,
+        'firstname': user.firstname,
+        'lastname': user.lastname,
+        'position': user.position,
+        'projects': user.projects
       });
     })();
 
