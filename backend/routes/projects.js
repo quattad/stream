@@ -71,13 +71,13 @@ router.route('/add').post(auth,
     }
 );
 
-// Read functionality - find one project
+// Read functionality - find one project based on projectId
 router.route('/find/:projectId').get(auth,
     async (req, res) => {
         try {
             const project = await Project.findOne({
                 "_id": req.params.projectId,
-                "members": req.user.username
+                "members": req.user._id
             });
             res.status(200).send(project);
         } catch (err) {
@@ -88,6 +88,31 @@ router.route('/find/:projectId').get(auth,
         }
     }
 );
+
+// Read functionality - find all projects based on userId
+router.route('/findall').get(auth, 
+    async (req, res) => {
+        try {
+            let conditions = {
+                members: {
+                    $all: [req.user._id]
+                }
+            };
+
+            let projects = await Project.find(conditions);
+
+            if (projects.length < 1) {
+                res.status(200).send("NO_PROJECTS_FOUND")
+            };
+
+            res.status(200).send(projects);
+        } catch (err) {
+            res.status(400).send({
+                "err":"ProjectFindAllError",
+                "description": err
+            });
+        }
+    });
 
 // Update Functionality - Update project name
 router.route('/update/name/:projectId').post(auth,
@@ -148,7 +173,7 @@ router.route('/update/description/:projectId').post(auth,
         try {
             conditions = {
                 "_id": req.params.projectId,
-                "members": req.user.username
+                "members": req.user._id
             };
 
             options = {
@@ -190,7 +215,7 @@ router.route('/update/members/:projectId').post(auth,
         try {
             conditions = {
                 "_id": req.params.projectId,
-                "members": req.user.username
+                "members": req.user._id
             };
 
             options = {
@@ -240,7 +265,7 @@ router.route('/update/admins/:projectId').post(auth,
         try {
             conditions = {
                 "_id": req.params.projectId,
-                "members": req.user.username
+                "members": req.user._id
             };
 
             options = {
@@ -277,7 +302,7 @@ router.route('/delete').post(auth,
         try {
             await Project.findOneAndDelete({
                 "name": req.body.name, 
-                "members": req.user.username
+                "members": req.user._id
             });
             
             req.user.projects = req.user.projects.filter((project) => {
