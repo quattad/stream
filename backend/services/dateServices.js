@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 /**
  * Custom function to parse dates; convert from string to moment object
  * @param {*} input 
