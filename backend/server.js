@@ -35,7 +35,9 @@ app.use(cookieParser(process.env.COOKIE_SECRET))
 const usersRouter = require('./routes/users')
 const projectsRouter = require('./routes/projects')
 const featuresRouter = require('./routes/features')
+const tasksRouter = require('./routes/tasks')
 
-app.use('/users', usersRouter)
-app.use('/projects', projectsRouter)
-app.use('/features', featuresRouter)
+app.use('/users', usersRouter);
+app.use('/projects', projectsRouter);
+app.use('/features', featuresRouter);
+app.use('/tasks', tasksRouter);
