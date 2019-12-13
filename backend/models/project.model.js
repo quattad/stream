@@ -6,7 +6,7 @@ const tasks = new Schema({
         type: String,
         required: true,
         minlength: 5,
-        maxlength: 10
+        maxlength: 30
     },
     description: {
         type: String,
