@@ -82,7 +82,7 @@ router.route('/add/:projectId').post(auth,
 
                 let conditions = {
                     "_id": req.params.projectId,
-                    "members": req.user.username,
+                    "members": req.user._id,
                 };
 
                 let featuresToPush = {
@@ -139,7 +139,7 @@ router.route('/update/name/:projectId/:featureId').post(auth,
             try {
                 let conditions = {
                     "_id": req.params.projectId,
-                    "members": req.user.username,
+                    "members": req.user._id,
                     "features._id": req.params.featureId
                 };
 
@@ -183,7 +183,7 @@ router.route('/update/description/:projectId/:featureId').post(auth,
         try {
             let conditions = {
                 "_id": req.params.projectId,
-                "members": req.user.username,
+                "members": req.user._id,
                 "features._id": req.params.featureId
             };
 
@@ -213,7 +213,7 @@ router.route('/update/members/:projectId/:featureId').post(auth,
         try {
             let conditions = {
                 "_id": req.params.projectId,
-                "members": req.user.username,
+                "members": req.user._id,
                 "features._id": req.params.featureId
             };
 
@@ -224,7 +224,7 @@ router.route('/update/members/:projectId/:featureId').post(auth,
             );
 
             let featuresToUpdate = {
-                "$push": {
+                $push: {
                     "features.$.members": req.body.featureMemberIds
                 }
             };
@@ -249,7 +249,7 @@ router.route('/update/startdate/:projectId/:featureId').post(auth,
         try {
             let conditions = {
                 "_id": req.params.projectId,
-                "members": req.user.username,
+                "members": req.user._id,
                 "features._id": req.params.featureId
             };
 
@@ -282,7 +282,7 @@ router.route('/update/enddate/:projectId/:featureId').post(auth,
         try {
             let conditions = {
                 "_id": req.params.projectId,
-                "members": req.user.username,
+                "members": req.user._id,
                 "features._id": req.params.featureId
             };
 
@@ -315,7 +315,7 @@ router.route('/delete/:projectId/:featureId').post(auth,
         try {
             let conditions = {
                 "_id": req.params.projectId,
-                "members": req.user.username,
+                "members": req.user._id,
                 "features._id": req.params.featureId
             };
 
