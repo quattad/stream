@@ -19,4 +19,5 @@ const projectNameToId = async (name) => {
     return project._id;
 };
 
-module.exports = userIdToUsername, usernameToUserId;
+module.exports = projectIdToName;
+module.exports = projectNameToId;
