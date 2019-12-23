@@ -5,12 +5,12 @@ const tasks = new Schema({
     name: {
         type: String,
         required: true,
-        minlength: 5,
-        maxlength: 30
+        minlength: 1,
+        maxlength: 10
     },
     description: {
         type: String,
-        maxlength: 20
+        maxlength: 100
     },
     startDate: {
         type: Date,
