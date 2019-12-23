@@ -1,8 +1,8 @@
 import React from "react";
-import {Redirect} from "react-router"
+import { Redirect } from "react-router"
 import axios from "axios";
 
-import {UncontrolledPopover, PopoverBody, FormFeedback, FormGroup, Button, Card, CardBody, CardFooter, Form, Input, InputGroupAddon, InputGroupText, InputGroup, Container,Col } from "reactstrap";
+import { UncontrolledPopover, PopoverBody, FormFeedback, FormGroup, Button, Card, CardBody, CardFooter, Form, Input, InputGroupAddon, Container, Col } from "reactstrap";
 
 // Import child components
 import Navbar from "./Navbar.components";
