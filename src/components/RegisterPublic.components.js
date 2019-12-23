@@ -1,6 +1,6 @@
 import React from "react";
 import axios from 'axios';
-import {Redirect} from 'react-router'
+import { Redirect } from 'react-router'
 
 // reactstrap components
 import {
@@ -78,7 +78,6 @@ const LoginPage = () => {
     axios.post('http://localhost:5000/users/add', user)
       .then(res => {
         if (!res.data.error) {
-          console.log('React - User added successfully')
           onFireRedirect(e)
         } else {
           console.log("Error: " + res.data.error)

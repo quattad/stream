@@ -1,22 +1,6 @@
 /*eslint-disable*/
 import React from "react";
-import {Redirect} from "react-router"
-
-// reactstrap components
-import {
-    Button,
-    Container,
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    Form,
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
-    Col
-} from "reactstrap";
+import { Button, Container, Form, Input, InputGroup, Col} from "reactstrap";
 
 import TransparentFooter from './TransparentFooter'
 import axios from "axios";
