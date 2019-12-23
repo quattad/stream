@@ -12,18 +12,18 @@ const Project = require('../models/project.model');
 const auth = require('./auth');
 
 // Create tasks
-router.route('/add/:projectId/:featureId').post(auth,
+router.route('/add/:projectName').post(auth,
         [
             check('name')
                 .exists()
                 .isLength({
-                    min: 5,
+                    min: 1,
                     max: 10
                 })
-                .withMessage('Feature name must be between 5 to 30 characters long.'),
+                .withMessage('Feature name must be between 1 to 10 characters long.'),
             check('description')
                 .isLength({
-                    max: 20
+                    max: 100
                 })
                 .withMessage('Feature description must be less than 100 characters.'),
             check('startDate')
@@ -70,14 +70,14 @@ router.route('/add/:projectId/:featureId').post(auth,
 
             try {
                 let conditions = {
-                    "_id": req.params.projectId,
+                    "name": req.params.projectName,
                     "members": req.user._id,
-                    "features._id": req.params.featureId
+                    "features.name": req.body.featureName
                 };
 
                 let tasksToPush = {
                     $push: {
-                        "features.$.tasks":
+                        "features.$[feature].tasks":
                         {
                             "name": req.body.name,
                             "description": req.body.description,
@@ -88,6 +88,9 @@ router.route('/add/:projectId/:featureId').post(auth,
                 };
 
                 let options = {
+                    arrayFilters: [
+                        {"feature.name": req.body.featureName}
+                    ],
                     upsert: true
                 };
 
@@ -105,7 +108,7 @@ router.route('/add/:projectId/:featureId').post(auth,
 // Read - use project fetch
 
 // Update - update task name
-router.route('/update/name/:projectId/:featureId/:taskId').post(auth,
+router.route('/update/name/:projectName/:featureName/:taskName').post(auth,
     [
         check('taskName')
             .exists()
@@ -126,9 +129,9 @@ router.route('/update/name/:projectId/:featureId/:taskId').post(auth,
 
             try {
                 let conditions = {
-                    "_id": req.params.projectId,
+                    "name": req.params.projectName,
                     "members": req.user._id,
-                    "features._id": req.params.featureId,
+                    "features.name": req.params.featureName,
                 };
 
                 let tasksToUpdate = {
@@ -139,8 +142,8 @@ router.route('/update/name/:projectId/:featureId/:taskId').post(auth,
 
                 let options = {
                     arrayFilters : [
-                        {"feature._id": req.params.featureId},
-                        {"task._id": req.params.taskId}
+                        {"feature.name": req.params.featureName},
+                        {"task.name": req.params.taskName}
                     ],
                     upsert: true
                 };
@@ -157,7 +160,7 @@ router.route('/update/name/:projectId/:featureId/:taskId').post(auth,
         });
 
 // Update - update task description
-router.route('/update/description/:projectId/:featureId/:taskId').post(auth,
+router.route('/update/description/:projectName/:featureName/:taskName').post(auth,
     [
         check('description')
         .isLength({
@@ -175,9 +178,9 @@ router.route('/update/description/:projectId/:featureId/:taskId').post(auth,
         
         try {
             let conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id,
-                "features._id": req.params.featureId
+                "features.name": req.params.featureName
             };
 
             let tasksToUpdate = {
@@ -188,8 +191,8 @@ router.route('/update/description/:projectId/:featureId/:taskId').post(auth,
 
             let options = {
                 arrayFilters : [
-                    {"feature._id": req.params.featureId},
-                    {"task._id": req.params.taskId}
+                    {"feature.name": req.params.featureName},
+                    {"task.name": req.params.taskName}
                 ],
                 upsert: true
             };
@@ -205,13 +208,13 @@ router.route('/update/description/:projectId/:featureId/:taskId').post(auth,
     });
 
 // Update - update task start date
-router.route('/update/startdate/:projectId/:featureId/:taskId').post(auth,
+router.route('/update/startdate/:projectName/:featureName/:taskName').post(auth,
     async (req, res) => {
         try {
             let conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id,
-                "features._id": req.params.featureId
+                "features.name": req.params.featureName
             };
 
             let newStartDate = dateStrToMoment(req.body.taskStartDate);
@@ -224,8 +227,8 @@ router.route('/update/startdate/:projectId/:featureId/:taskId').post(auth,
 
             let options = {
                 arrayFilters : [
-                    {"feature._id": req.params.featureId},
-                    {"task._id": req.params.taskId}
+                    {"feature.name": req.params.featureName},
+                    {"task.name": req.params.taskName}
                 ],  
                 upsert: true
             };
@@ -241,13 +244,13 @@ router.route('/update/startdate/:projectId/:featureId/:taskId').post(auth,
     });
     
 // Update - update task end date
-router.route('/update/enddate/:projectId/:featureId/:taskId').post(auth,
+router.route('/update/enddate/:projectName/:featureName/:taskName').post(auth,
     async (req, res) => {
         try {
             let conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id,
-                "features._id": req.params.featureId
+                "features.name": req.params.featureName
             };
 
             let newEndDate = dateStrToMoment(req.body.taskEndDate);
@@ -261,10 +264,10 @@ router.route('/update/enddate/:projectId/:featureId/:taskId').post(auth,
             let options = {
                 arrayFilters : [
                     {
-                        "feature._id": req.params.featureId
+                        "feature.name": req.params.featureName
                     },
                     {
-                        "task._id": req.params.taskId
+                        "task.name": req.params.taskName
                     }
                 ],
                 upsert: true
@@ -282,20 +285,20 @@ router.route('/update/enddate/:projectId/:featureId/:taskId').post(auth,
     });
 
 // Delete task
-router.route('/delete/:projectId/:featureId/:taskId').post(auth,
+router.route('/delete/:projectName/:featureName/:taskName').post(auth,
     async(req, res) => {
         try {
             let conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id,
-                "features._id": req.params.featureId
+                "features.name": req.params.featureName
             };
             
             let tasksToDelete = {
                 $pull: {
                     "features.$[feature].tasks":
                     {
-                        "_id": req.params.taskId
+                        "name": req.params.taskName
                     }
                 }
             };
@@ -303,7 +306,7 @@ router.route('/delete/:projectId/:featureId/:taskId').post(auth,
             let options = {
                 arrayFilters: [
                     {
-                        "feature._id": req.params.featureId
+                        "feature.name": req.params.featureName
                     }
                 ]
             };
