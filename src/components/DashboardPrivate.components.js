@@ -20,7 +20,7 @@ function DashboardPrivate() {
     'lastname':"",
     "position":"",
     "projects":[]
-  })
+  });
 
   let pageHeader = React.createRef();
   const auth = useAuthContext();
