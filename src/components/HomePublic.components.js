@@ -1,6 +1,6 @@
-import React from "react";
-import {Redirect} from "react-router"
-import { Button, Container, Card, CardFooter, Form, Col } from "reactstrap";
+import React from 'react';
+import { Redirect } from 'react-router';
+import { Button, Container, Card, CardFooter, Form, Col } from 'reactstrap';
 
 // Import child components
 import TransparentFooter from './TransparentFooter'
