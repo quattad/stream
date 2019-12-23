@@ -11,113 +11,175 @@ const Project = require('../models/project.model');
 // Import contexts
 const auth = require('./auth');
 
-// Create functionality
-router.route('/add/:projectId').post(auth,
-        [
-            check('name')
-                .exists()
-                .isLength({
-                    min: 5,
-                    max: 30
-                })
-                .withMessage('Feature name must be between 5 to 30 characters long.'),
-            check('description')
-                .isLength({
-                    max: 100
-                })
-                .withMessage('Feature description must be less than 100 characters.'),
-            check('tasks.*.name')
-                .exists()
-                .not().isEmpty()
-                .isLength({
-                    min: 5,
-                    max: 10
-                })
-                .withMessage('Task must not be empty and be between 5 to 10 characters long.'),
-            check('tasks.*.startDate')
-                .exists().withMessage("Start date must exist.")
-                .custom((startDate) => {
-                    startDate = dateStrToMoment(startDate);
-                    if (!startDate.isValid()) {
-                        return false;
-                    } else {
-                        return true;
-                    };
-                }).withMessage("Task start date must be a valid date.")
-                .custom((startDate) => {
-                    todayDate = moment();
-                    yesterdayDate = todayDate.subtract(1, 'day');
-                    startDate = dateStrToMoment(startDate);
+// Create feature with tasks
+// router.route('/add/:projectId').post(auth,
+//         [
+//             check('name')
+//                 .exists()
+//                 .isLength({
+//                     min: 5,
+//                     max: 30
+//                 })
+//                 .withMessage('Feature name must be between 5 to 30 characters long.'),
+//             check('description')
+//                 .isLength({
+//                     max: 100
+//                 })
+//                 .withMessage('Feature description must be less than 100 characters.'),
+//             check('tasks.*.name')
+//                 .exists()
+//                 .not().isEmpty()
+//                 .isLength({
+//                     min: 5,
+//                     max: 10
+//                 })
+//                 .withMessage('Task must not be empty and be between 5 to 10 characters long.'),
+//             check('tasks.*.startDate')
+//                 .exists().withMessage("Start date must exist.")
+//                 .custom((startDate) => {
+//                     startDate = dateStrToMoment(startDate);
+//                     if (!startDate.isValid()) {
+//                         return false;
+//                     } else {
+//                         return true;
+//                     };
+//                 }).withMessage("Task start date must be a valid date.")
+//                 .custom((startDate) => {
+//                     todayDate = moment();
+//                     yesterdayDate = todayDate.subtract(1, 'day');
+//                     startDate = dateStrToMoment(startDate);
 
-                    if (startDate.isBefore(yesterdayDate)) {
-                        return false;
-                    } else {
-                        return true;
-                    };
-                }).withMessage("Task start date must be equal or after today\'s date"),
-            check('tasks.*.endDate')
-                .exists().withMessage("End date must exist.")
-                .custom((endDate, {req}) => {
-                    endDate = dateStrToMoment(endDate) 
-                    startDate = dateStrToMoment(req.body.tasks.startDate)
-                    if (startDate.isAfter(endDate)) {
-                        return false;
-                    } else {
-                        return true
-                    }
-                }).withMessage("Task end date must be after task start date."),
-        ],
-        async (req, res) => {
-            const errors = validationResult(req);
+//                     if (startDate.isBefore(yesterdayDate)) {
+//                         return false;
+//                     } else {
+//                         return true;
+//                     };
+//                 }).withMessage("Task start date must be equal or after today\'s date"),
+//             check('tasks.*.endDate')
+//                 .exists().withMessage("End date must exist.")
+//                 .custom((endDate, {req}) => {
+//                     endDate = dateStrToMoment(endDate) 
+//                     startDate = dateStrToMoment(req.body.tasks.startDate)
+//                     if (startDate.isAfter(endDate)) {
+//                         return false;
+//                     } else {
+//                         return true
+//                     }
+//                 }).withMessage("Task end date must be after task start date."),
+//         ],
+//         async (req, res) => {
+//             const errors = validationResult(req);
 
-            if (!errors.isEmpty()) {
-                return res.status(422).send({
-                    errors: errors.array()
-                })
-            };
+//             if (!errors.isEmpty()) {
+//                 return res.status(422).send({
+//                     errors: errors.array()
+//                 })
+//             };
 
-            try {
-                let featureStartDate = getEarliestDate(req.body.tasks);
-                let featureEndDate = getLatestDate(req.body.tasks);
+//             try {
+//                 let featureStartDate = getEarliestDate(req.body.tasks);
+//                 let featureEndDate = getLatestDate(req.body.tasks);
 
-                let conditions = {
-                    "_id": req.params.projectId,
-                    "members": req.user._id,
-                };
+//                 let conditions = {
+//                     "_id": req.params.projectId,
+//                     "members": req.user._id,
+//                 };
 
-                let featuresToPush = {
-                    $push: {
-                        features: {
-                            "name": req.body.name,
-                            "description": req.body.description,
-                            "creator": req.user._id,
-                            "members": [req.user._id],
-                            "startDate": featureStartDate,
-                            "endDate": featureEndDate,
-                            "tasks": req.body.tasks
-                        }
-                    }
-                };
+//                 let featuresToPush = {
+//                     $push: {
+//                         features: {
+//                             "name": req.body.name,
+//                             "description": req.body.description,
+//                             "creator": req.user._id,
+//                             "members": [req.user._id],
+//                             "startDate": featureStartDate,
+//                             "endDate": featureEndDate,
+//                             "tasks": req.body.tasks
+//                         }
+//                     }
+//                 };
 
-                let options = {
-                    upsert: true
-                };
+//                 let options = {
+//                     upsert: true
+//                 };
 
-                await Project.findOneAndUpdate(conditions, featuresToPush, options);
-                res.status(200).send("FEATURE_CREATED");
+//                 await Project.findOneAndUpdate(conditions, featuresToPush, options);
+//                 res.status(200).send("FEATURE_CREATED");
                 
-            } catch (err) {
-                res.status(400).send({
-                    "err": "FeatureAddError",
-                    "description": err
-                });
+//             } catch (err) {
+//                 res.status(400).send({
+//                     "err": "FeatureAddError",
+//                     "description": err
+//                 });
+//             };
+//         });
+
+// Create feature without existing tasks
+router.route('/add/:projectName').post(auth,
+    [
+        check('name')
+            .exists()
+            .isLength({
+                min: 5,
+                max: 30
+            })
+            .withMessage('Feature name must be between 5 to 30 characters long.'),
+        check('description')
+            .isLength({
+                max: 100
+            })
+            .withMessage('Feature description must be less than 100 characters.'),
+        check('members')
+            .isArray(),
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).send({
+                errors: errors.array()
+            })
+        };
+
+        try {
+            let conditions = {
+                "name": req.params.projectName,
+                "members": req.user._id,
             };
-        });
+
+            let featuresToPush = {
+                $push: {
+                    features: {
+                        "name": req.body.name,
+                        "description": req.body.description,
+                        "creator": req.user._id,
+                        "members": req.body.members,
+                        "startDate": "",
+                        "endDate": "",
+                        "tasks": []
+                    }
+                }
+            };
+
+            let options = {
+                upsert: true
+            };
+
+            await Project.findOneAndUpdate(conditions, featuresToPush, options);
+            res.status(200).send("FEATURE_CREATED");
+            
+        } catch (err) {
+            res.status(400).send({
+                "err": "FeatureAddError",
+                "description": err
+            });
+        };
+    });
 
 // Read - use project fetch
 
 // Update - update feature name
-router.route('/update/name/:projectId/:featureId').post(auth,
+router.route('/update/name/:projectName/:featureName').post(auth,
     [
         check('featureName')
             .exists()
@@ -138,18 +200,21 @@ router.route('/update/name/:projectId/:featureId').post(auth,
 
             try {
                 let conditions = {
-                    "_id": req.params.projectId,
+                    "name": req.params.projectName,
                     "members": req.user._id,
-                    "features._id": req.params.featureId
+                    "features.name": req.params.featureName
                 };
 
                 let featuresToUpdate = {
                     "$set": {
-                        "features.$.name": req.body.featureName
+                        "features.$[feature].name": req.body.featureName
                     }
                 };
 
                 let options = {
+                    arrayFilters: [
+                        {"feature.name": req.params.featureName}
+                    ],
                     upsert: true
                 };
             
@@ -164,7 +229,7 @@ router.route('/update/name/:projectId/:featureId').post(auth,
         });
 
 // Update - update feature description
-router.route('/update/description/:projectId/:featureId').post(auth,
+router.route('/update/description/:projectName/:featureName').post(auth,
     [
         check('description')
         .isLength({
@@ -182,18 +247,21 @@ router.route('/update/description/:projectId/:featureId').post(auth,
         
         try {
             let conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id,
-                "features._id": req.params.featureId
+                "features.name": req.params.featureName
             };
 
             let featuresToUpdate = {
                 "$set": {
-                    "features.$.description": req.body.featureDescription
+                    "features.$[feature.name].description": req.body.featureDescription
                 }
             };
 
             let options = {
+                arrayFilters: [
+                    {"feature.name": req.params.featureName}
+                ],
                 upsert: true
             };
             
@@ -208,28 +276,25 @@ router.route('/update/description/:projectId/:featureId').post(auth,
     });
 
 // Update - update feature members
-router.route('/update/members/:projectId/:featureId').post(auth,
+router.route('/update/members/:projectName/:featureName').post(auth,
     async (req, res) => {
         try {
             let conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id,
-                "features._id": req.params.featureId
+                "features.name": req.params.featureName
             };
-
-            let featureMembersIdsToAdd = Promise.all(
-                req.body.featureMembers.map(async(member)=> {
-                    
-                })
-            );
 
             let featuresToUpdate = {
                 $push: {
-                    "features.$.members": req.body.featureMemberIds
+                    "features.$[feature.name].members": req.body.featureMembersArray
                 }
             };
 
             let options = {
+                arrayFilters: [
+                    {"feature.name": req.params.featureName}
+                ],
                 upsert: true
             };
             
@@ -244,25 +309,28 @@ router.route('/update/members/:projectId/:featureId').post(auth,
     });
 
 // Update - update feature start date
-router.route('/update/startdate/:projectId/:featureId').post(auth,
+router.route('/update/startdate/:projectName/:featureName').post(auth,
     async (req, res) => {
         try {
             let conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id,
-                "features._id": req.params.featureId
+                "features.name": req.params.featureName
             };
 
             let projectToUpdate = await Project.findOne(conditions);
             let featureStartDate = getEarliestDate(projectToUpdate.features.tasks);
 
             let featuresToUpdate = {
-                "$set": {
-                    "features.$.startDate": featureStartDate
+                $set: {
+                    "features.$[features.name].startDate": featureStartDate
                 }
             };
 
             let options = {
+                arrayFilters: [
+                    {"feature.name": req.params.featureName}
+                ],
                 upsert: true
             };
             
@@ -277,25 +345,28 @@ router.route('/update/startdate/:projectId/:featureId').post(auth,
     });
     
 // Update - update feature end date
-router.route('/update/enddate/:projectId/:featureId').post(auth,
+router.route('/update/enddate/:projectName/:featureName').post(auth,
     async (req, res) => {
         try {
             let conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id,
-                "features._id": req.params.featureId
+                "features.name": req.params.featureName
             };
 
             let projectToUpdate = await Project.findOne(conditions);
             let featureEndDate = getLatestDate(projectToUpdate.features.tasks);
 
             let featuresToUpdate = {
-                "$set": {
-                    "features.$.endDate": featureEndDate
+                $set: {
+                    "features.$[feature].endDate": featureEndDate
                 }
             };
 
             let options = {
+                arrayFilters: [
+                    {"feature.name": req.params.featureName}
+                ],
                 upsert: true
             };
             
@@ -310,13 +381,13 @@ router.route('/update/enddate/:projectId/:featureId').post(auth,
     });
 
 // Delete functionality
-router.route('/delete/:projectId/:featureId').post(auth,
+router.route('/delete/:projectName/:featureName').post(auth,
     async(req, res) => {
         try {
             let conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id,
-                "features._id": req.params.featureId
+                "features.name": req.params.featureName
             };
 
             const project = await Project.findOne(conditions);
