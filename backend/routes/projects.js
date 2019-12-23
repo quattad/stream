@@ -13,6 +13,9 @@ const auth = require('./auth')
 // Import user services
 const {usernameToUserId} = require('../services/userServices');
 
+// Import project services
+const {projectNameToId} = require('../services/projectServices');
+
 // Create functionality
 router.route('/add').post(auth,
     [
@@ -72,11 +75,29 @@ router.route('/add').post(auth,
 );
 
 // Read functionality - find one project based on projectId
-router.route('/find/:projectId').get(auth,
+// router.route('/find/:projectId').get(auth,
+//     async (req, res) => {
+//         try {
+//             const project = await Project.findOne({
+//                 "_id": req.params.projectId,
+//                 "members": req.user._id
+//             });
+//             res.status(200).send(project);
+//         } catch (err) {
+//             res.status(422).send({
+//                 "err": "AuthenticationError",
+//                 "description" : err.message
+//         })
+//         }
+//     }
+// );
+
+// Read functionality - find one project based on project name
+router.route('/find/:projectName').get(auth,
     async (req, res) => {
         try {
             const project = await Project.findOne({
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id
             });
             res.status(200).send(project);
@@ -115,7 +136,7 @@ router.route('/findall').get(auth,
     });
 
 // Update Functionality - Update project name
-router.route('/update/name/:projectId').post(auth,
+router.route('/update/name/:projectName').post(auth,
     [
         check('name')
             .isLength({min: 5, max: 30})
@@ -131,7 +152,7 @@ router.route('/update/name/:projectId').post(auth,
 
         try {
             conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user.username
             };
 
@@ -156,7 +177,7 @@ router.route('/update/name/:projectId').post(auth,
     });
 
 // Update Functionality - Update project description
-router.route('/update/description/:projectId').post(auth,
+router.route('/update/description/:projectName').post(auth,
     [
         check('description')
             .isLength({max: 100})
@@ -172,7 +193,7 @@ router.route('/update/description/:projectId').post(auth,
 
         try {
             conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id
             };
 
@@ -197,7 +218,7 @@ router.route('/update/description/:projectId').post(auth,
     });
 
 // Update Functionality - Update members
-router.route('/update/members/:projectId').post(auth,
+router.route('/update/members/:projectName').post(auth,
     [
         check('members')
             .isArray()
@@ -214,7 +235,7 @@ router.route('/update/members/:projectId').post(auth,
 
         try {
             conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id
             };
 
@@ -247,7 +268,7 @@ router.route('/update/members/:projectId').post(auth,
     });
 
 // Update Functionality - Update admin
-router.route('/update/admins/:projectId').post(auth,
+router.route('/update/admins/:projectName').post(auth,
     [
         check('admins')
             .isArray()
@@ -264,7 +285,7 @@ router.route('/update/admins/:projectId').post(auth,
 
         try {
             conditions = {
-                "_id": req.params.projectId,
+                "name": req.params.projectName,
                 "members": req.user._id
             };
 
