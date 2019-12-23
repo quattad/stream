@@ -1,16 +1,15 @@
 import React from 'react'
 
 // reactstrap components./ProjectsTableHeader.components
-import {Container} from "reactstrap";
+import { Container } from "reactstrap";
 
 import ProjectsTableHeader from './ProjectsTableHeader.components'
 import ProjectsTableButton from "./ProjectsTableButton.components"
 import ProjectsTableRow from "./ProjectsTableRow.components"
 
-import {useDashboardContext} from "../DashboardPrivate.components"
+import { useDashboardContext } from "../DashboardPrivate.components"
 
 function ProjectsTable () {
-
     const dbContext = useDashboardContext();
     
     const renderedProjects = (() => {
@@ -18,7 +17,7 @@ function ProjectsTable () {
             let projects = dbContext.userState.projects
             return projects.map(project =>
             <div className="row">
-                <Container><ProjectsTableRow project={project} /></Container>
+                <Container><ProjectsTableRow key={project.name} project={project} /></Container>
             </div>
             )
         } else {
