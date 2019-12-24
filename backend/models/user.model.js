@@ -19,15 +19,19 @@ const userSchema = new Schema(
             unique: true,
             trim: true,
             minlength: 5,
-            lowercase: true
+            maxlength: 10,
         },
         firstname: {
             type: String,
-            required: true
+            required: true,
+            minlength: 1,
+            maxlength: 10
         },
         lastname: {
             type: String,
-            required: true
+            required: true,
+            minlength: 1,
+            maxlength: 10
         },
         email: {
             type: String,
