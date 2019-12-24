@@ -69,6 +69,7 @@
     "cookie-parser": "^1.4.4",
     "cypress": "^3.4.1",
     "d3": "^5.14.2",
+    "elasticsearch": "^16.5.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^6.4.0",
