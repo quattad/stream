@@ -12,7 +12,7 @@ function HomePrivate() {
 
   const fetchUserProfile = async () => {
     try {
-    const res = await axios.get("http://localhost:5000/users/profile", 
+    const res = await axios.get(`${process.env.REACT_APP_BASE_SERVER_URL}/users/profile`, 
     {
       withCredentials: true
     })
@@ -55,7 +55,7 @@ function HomePrivate() {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/users/update', 
+      const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/users/update`, 
       updateUser, 
       {
         withCredentials:true

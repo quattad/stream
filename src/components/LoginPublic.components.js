@@ -93,7 +93,7 @@ function LoginPage () {
   // Define login function
   const onSubmitLogin = async (e) => {
     try {
-      const res = await axios.post('http://localhost:5000/users/login', {
+      const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/users/login`, {
         "email": emailState,
         "password": passwordState
       },

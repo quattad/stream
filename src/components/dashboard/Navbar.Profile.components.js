@@ -25,7 +25,7 @@ function NavbarProfile () {
     // Define logout function
     const onSubmitLogout = async (e) => {
         try {
-            const res = await axios.post('http://localhost:5000/users/logout', {}, {withCredentials: true});
+            const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/users/logout`, {}, {withCredentials: true});
             if (!res.data.error) {
                 auth.handleLogout();
                 onFireRedirectHome(e)

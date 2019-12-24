@@ -47,7 +47,7 @@ function AddNewProject() {
 
     const onCreateProject = async (e) => { 
         try {
-          const res = await axios.post('http://localhost:5000/projects/add', {
+          const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/projects/add`, {
             "name": projectNameState,
             "description": projectDescriptionState,
             "members":membersState,
