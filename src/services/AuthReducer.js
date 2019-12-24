@@ -48,7 +48,7 @@ export const checkAuth = async (auth) => {
    * during request 
    */
   try {
-    const res = await axios.get(`${process.env.BASE_SERVER_URL}/users/checkauth`, {
+    const res = await axios.get(`${process.env.REACT_APP_BASE_SERVER_URL}/users/checkauth`, {
       withCredentials:true
     });
 
@@ -63,7 +63,7 @@ export const checkAuth = async (auth) => {
 
 export const fetchUserProfile = async (auth) => {
   try {
-    const res = await axios.get(`${process.env.BASE_SERVER_URL}/users/profile`, 
+    const res = await axios.get(`${process.env.REACT_APP_BASE_SERVER_URL}/users/profile`, 
     {
       withCredentials: true
     })
