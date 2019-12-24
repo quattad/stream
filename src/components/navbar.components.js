@@ -74,12 +74,12 @@ function IndexNavbar () {
               <NavItem>
                 <NavLink href="/login" hidden={auth.state.isAuthenticated}><p>Login</p></NavLink>
               </NavItem>
-              <NavItem>
+              {/* <NavItem>
                 <NavLink href="/projects" hidden={!auth.state.isAuthenticated}><p>Projects</p></NavLink>
               </NavItem>
               <NavItem>
                 <NavLink href="/teams" hidden={!auth.state.isAuthenticated}><p>Teams</p></NavLink>
-              </NavItem>
+              </NavItem> */}
               <NavItem>
                 <NavbarProfile></NavbarProfile>
               </NavItem>
