@@ -5,28 +5,29 @@ const {check, validationResult} = require('express-validator')
 let User = require('../models/user.model');
 
 // Import authentication middleware with JWT
-const auth = require('./auth')
+const auth = require('./auth');
 
 // Register user
 router.route('/add').post(
     [
         check('username')
-            .isLength({min:5})
-            .withMessage('Username must be at least 5 characters long'),
+            .isLength({min:5, max:10})
+            .withMessage('Username must be 5 to 10 characters long.'),
         check('firstname')
             .isLength({min:1})
-            .withMessage('First name must exist'),
+            .withMessage('First name must exist.'),
         check('lastname')
             .isLength({min:1})
-            .withMessage('Last name must exist'),
+            .withMessage('Last name must exist.'),
         check('email')
-            .isEmail(),
+            .isEmail()
+            .withMessage('Invalid email.'),
         check('password')
             // min 8 char, max 20 char, at least 1 uppercase, at least 1 lowercase , one number, one special char, case insensitive
             .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, "i")
     ],
     async (req, res) => {
-        var validationError = validationResult(req)
+        var validationError = validationResult(req);
 
         if (!validationError.isEmpty()) {
             return res.status(422).send({
@@ -50,7 +51,6 @@ router.route('/add').post(
                 await newUser.save();
                 res.status(201).send({newUser, token})
             } catch (err) {
-                console.log(err)
                 res.status(err.status).send({
                     "error": err.code,
                     "description": err.message
@@ -85,7 +85,7 @@ router.route('/login').post(
                         signed: true
                     }
 
-                    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+                    res.header('Access-Control-Allow-Origin', `${process.env.BASE_CLIENT_URL}`);
                     res.header('Access-Control-Allow-Credentials', true);
                     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
                     res.cookie("token", token, options)
@@ -201,6 +201,82 @@ router.route('/delete/:id').post(
                 res.status(400).json('Error: ' + err);
             }
         })
+    }
+);
+
+// Search using ES
+// Cannot be written asynchronously
+// Rewrite once ES server is deployed separately
+router.route('/search-es').post(auth,
+    (req, res) => {
+        let body = {
+                    match: {
+                        username: {
+                            query: req.body.username,
+                            fuzziness: "auto"
+                        }
+                    }
+                };
+
+        User.search(
+            body,
+            (err, results) => {
+                if (!err) {
+                    return res.status(200).send(results.body.hits.hits)
+                }
+                return res.status(400).send({
+                    err: "UserSearchError",
+                    description: err.message
+                });
+            });
+        }
+    );
+
+// Search using MongoDB
+router.route('/search-mongo').post(auth,
+    async (req, res) => {
+        try {
+            // Return array of results that match username
+            // Sort by textscore; higher textscore, more relevant match
+            const result = await User.find(
+                {
+                    $text: {
+                        $search: req.body.value
+                    }
+                },
+                {
+                    score: {
+                        $meta: "textScore"
+                    }
+                }
+            ).sort(
+                {
+                    score: {
+                        $meta: "textScore"
+                    }
+                }
+                );
+
+            if (result.length < 1) {
+                return res.status(400).send({
+                    err: "NoUsersFound",
+                    description: "NO_USERS_FOUND"
+                });
+            }
+            // Get array of usernames
+            const usernames = result.map(document => {
+                return document.username;
+            });
+        
+            return res.status(200).send({
+                usernames: usernames
+            });
+        } catch (err) {
+            return res.status(400).send({
+                err: "FetchUsernamesError",
+                description: err
+            });
+        }
     }
 );
 
