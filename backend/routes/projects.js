@@ -5,13 +5,12 @@ const {check, validationResult} = require('express-validator');
 
 // Import models
 const Project = require('../models/project.model');
-const User = require('../models/user.model');
 
 // Import authentication middleware with JWT
 const auth = require('./auth')
 
 // Import user services
-const {usernameToUserId} = require('../services/userServices');
+const {usernameToUserId, userIdToUsername} = require('../services/userServices');
 
 // Import project services
 const {projectNameToId} = require('../services/projectServices');
@@ -96,10 +95,26 @@ router.route('/add').post(auth,
 router.route('/find/:projectName').get(auth,
     async (req, res) => {
         try {
-            const project = await Project.findOne({
+            let project = await Project.findOne({
                 "name": req.params.projectName,
                 "members": req.user._id
             });
+
+            const membersUsernameArray = await Promise.all(
+                project.members.map(async (memberId) => {
+                    return await userIdToUsername(memberId);
+                })
+            );
+
+            project.members = membersUsernameArray;
+
+            const adminsUsernameArray = await Promise.all(
+                project.admins.map(async (adminId) => {
+                    return await userIdToUsername(adminId);
+                })
+            );
+
+            project.admins = adminsUsernameArray;
             res.status(200).send(project);
         } catch (err) {
             res.status(422).send({
@@ -133,6 +148,59 @@ router.route('/findall').get(auth,
                 "description": err
             });
         }
+    });
+
+// Update Functionality - Update all fields
+router.route('/update/all/:projectName').post(auth,
+    [
+        check('name')
+            .isLength({min: 5, max: 30})
+            .withMessage('Spaces will be converted into hyphens'),
+        check('description')
+            .isLength({max: 100}),
+        check('members')
+            .isArray()
+            .isLength({min: 1, max: 10}),
+        check('admins')
+            .isArray()
+            .isLength({min: 1}),
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                errors: errors.array()
+            });
+        }
+
+        try {
+            conditions = {
+                "name": req.params.projectName,
+                "members": req.user.username
+            };
+
+            options = {
+                upsert: true
+            };
+
+            projectToUpdate = {
+                "name": req.body.name,
+                "description": req.body.description,
+                "members": req.body.members,
+                "admin": req.body.admins
+            };
+
+            await Project.findOneAndUpdate(conditions, options, projectToUpdate);
+            res.status(200).send(
+                "PROJECT_ALL_UPDATED"
+                );
+        } catch (err) {
+            res.status(400).send({
+                "err": "ProjectAllUpdateError",
+                "description": err
+            });
+        };
     });
 
 // Update Functionality - Update project name
