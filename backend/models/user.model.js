@@ -2,14 +2,19 @@
 const bcrypt = require('bcrypt');
 
 // object modeling tool designed to work in an asynchronous environment
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+// const mongoosastic = require('mongoosastic');
+
+// Test elasticsearch
+// const esClient = require('../es/esClient');
+
 const Schema = mongoose.Schema;
 
 // used for authentication and authorization; set up protected routes that only logged in users can access.
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
 // validate and sanitize user input
-const validator = require('validator')
+const validator = require('validator');
 
 const userSchema = new Schema(
     {
@@ -20,6 +25,8 @@ const userSchema = new Schema(
             trim: true,
             minlength: 5,
             maxlength: 10,
+            es_indexed: true,
+            es_boost: 2.0
         },
         firstname: {
             type: String,
@@ -87,7 +94,6 @@ userSchema.pre('save', function (next) {
         }
     });
 
-
 // Password Verification
 userSchema.methods.comparePassword = function (candidatePassword, actualPassword, cb) {
     bcrypt.compare(candidatePassword, actualPassword, function (err, isMatch) {
@@ -147,6 +153,34 @@ userSchema.methods.generateAuthToken = async function generateAuthToken() {
     return token
 }
 
-    
+// Linking mongoosastic with mongoose
+// Comment if using mongodb index
+// userSchema.plugin(mongoosastic, {
+//         esClient: esClient,
+// });
+
+// Create text index on mongodb schema
+userSchema.index({
+    username: 'text'
+});
+
 const User = mongoose.model('User', userSchema);
+
+// Indexing mongodb docs with ES
+// Comment if using mongodb index
+// const stream = User.synchronize();
+// let count = 0;
+
+// stream.on('data', (err, doc) => {
+//     count++;
+// });
+
+// stream.on('close', function(){
+//     console.log('indexed ' + count + ' documents!');
+//   });
+
+// stream.on('error', function(err){
+//     console.log(err);
+// });
+
 module.exports = User;
