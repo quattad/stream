@@ -18,7 +18,7 @@ router.route('/add/:projectName').post(auth,
                 .exists()
                 .isLength({
                     min: 1,
-                    max: 10
+                    max: 20
                 })
                 .withMessage('Feature name must be between 1 to 10 characters long.'),
             check('description')
