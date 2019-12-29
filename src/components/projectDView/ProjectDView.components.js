@@ -20,10 +20,16 @@ function ProjectDView(props) {
  
     let tasks = [];
     let taskTypes = [];
+    let features = [];
 
     if (projectData) {
         projectData.features.map((feature, index) => {
             let featureIndex = index;
+            features.push(
+                {
+                    name: feature.name,
+                    index: featureIndex
+                });
 
             feature.tasks.map(task => {
                 task.startDate = dateStrToJSDate(task.startDate);
@@ -38,33 +44,33 @@ function ProjectDView(props) {
         });
     };
 
-    const renderDiagramInitialState = "Select your chart."
+    // const renderDiagramInitialState = "Select your chart."
  
     // Switch case for graph rendering
-    const renderDiagram = (state, action) => {
-        switch (action.type) {
-            case 'Gantt Chart':
-                return <ProjectDViewGantt tasks={tasks} taskTypes={taskTypes}/>;
-            case 'RACI Matrix':
-                return <ProjectDViewRaci />;
-            case 'Project Dashboard':
-                return <ProjectDViewProjectDashboard />;
-            default:
-                return state;
-        }
-    };
+    // const renderDiagram = (state, action) => {
+    //     switch (action.type) {
+    //         case 'Gantt Chart':
+    //             return <ProjectDViewGantt tasks={tasks} taskTypes={taskTypes}/>;
+    //         case 'RACI Matrix':
+    //             return <ProjectDViewRaci />;
+    //         case 'Project Dashboard':
+    //             return <ProjectDViewProjectDashboard />;
+    //         default:
+    //             return state;
+    //     }
+    // };
  
-    const [renderDiagramState, renderDiagramDispatch] = React.useReducer(renderDiagram, renderDiagramInitialState);
+    // const [renderDiagramState, renderDiagramDispatch] = React.useReducer(renderDiagram, renderDiagramInitialState);
  
-    const renderDiagramGantt = () => {
-        renderDiagramDispatch({type: 'Gantt Chart'});
-    };
-    const renderDiagramRaci = () => {
-        renderDiagramDispatch({type: 'RACI Matrix'});
-    };
-    const renderProjectDashboard = () => {
-        renderDiagramDispatch({type: 'Project Dashboard'});
-    };
+    // const renderDiagramGantt = () => {
+    //     renderDiagramDispatch({type: 'Gantt Chart'});
+    // };
+    // const renderDiagramRaci = () => {
+    //     renderDiagramDispatch({type: 'RACI Matrix'});
+    // };
+    // const renderProjectDashboard = () => {
+    //     renderDiagramDispatch({type: 'Project Dashboard'});
+    // };
  
     React.useEffect(() => {
         // Fetch projectData
@@ -79,7 +85,6 @@ function ProjectDView(props) {
                 );
  
                 if (!res.data.error) {
-                    console.log("Project fetched");
                     setProjectData(res.data);
                 };
             } catch (err) {
@@ -117,9 +122,9 @@ function ProjectDView(props) {
         <ProjectDViewProvider value={{
             projectData,
             userData,
-            renderDiagramGantt, 
-            renderDiagramRaci,
-            renderProjectDashboard
+            // renderDiagramGantt, 
+            // renderDiagramRaci,
+            // renderProjectDashboard
             }}>
             <Container 
             style={{
@@ -132,7 +137,8 @@ function ProjectDView(props) {
                 paddingTop:"40px"}}>
                 <ProjectDViewGantt
                 tasks={tasks}
-                taskTypes={taskTypes}/>
+                taskTypes={taskTypes} 
+                features={features} />
                 {/* Uncomment with other views are functioning */}
                 {/* {renderDiagramState} */}
             </Container>
