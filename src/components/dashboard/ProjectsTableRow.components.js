@@ -1,10 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import axios from 'axios'
 
-function ProjectsTableRow (props) {
+const ProjectsTableRow = (props) => {
     const [deleteModalState, setDeleteModalState] = React.useState(false);
     const onChangeDeleteButton = () => {setDeleteModalState(!deleteModalState)};
 
@@ -13,6 +13,7 @@ function ProjectsTableRow (props) {
     };
 
     const projectDViewUri = `/projects/${props.project}`;
+    const editProjectUri = `/editproject/${props.project}`;
 
     const onDeleteProject = async () => {
         try {
@@ -35,19 +36,45 @@ function ProjectsTableRow (props) {
     };
     return (
     <>
-    <div className="float-left">
+    <div 
+    className="float-left">
         <h4>{props.project}</h4>
     </div> 
-    <div className="float-right" style={{paddingTop:"20px"}}>
-        <Link to={projectDViewUri}><Button outline className="btn-round" size="md">View</Button></Link>
-        <Button outline className="btn-round" size="md" onClick={() => {}}>Edit</Button>
-        <Button outline className="btn-round" size="md" onClick={onChangeDeleteButton}>Delete</Button>
-        <Modal isOpen={deleteModalState} toggle={onChangeDeleteButton}>
-            <ModalHeader toggle={onChangeDeleteButton}>Delete Project</ModalHeader>
+    <div 
+    className="float-right" 
+    style={{paddingTop:"20px"}}>
+        <Link 
+        to={projectDViewUri}>
+            <Button 
+            outline 
+            className="btn-round" 
+            size="md">View</Button>
+        </Link>
+        <Link 
+        to={editProjectUri}>
+            <Button 
+            outline 
+            className="btn-round" 
+            size="md">Edit</Button>
+        </Link>
+        <Button 
+        outline 
+        className="btn-round" 
+        size="md" 
+        onClick={onChangeDeleteButton}>Delete</Button>
+        <Modal 
+        isOpen={deleteModalState} 
+        toggle={onChangeDeleteButton}>
+            <ModalHeader 
+            toggle={onChangeDeleteButton}>Delete Project</ModalHeader>
             <ModalBody>Are you sure you would like to delete this project?</ModalBody>
             <ModalFooter>
-                <Button color="primary" onClick={onDeleteProject}>Yes</Button>
-                <Button color="secondary" onClick={onChangeDeleteButton}>No</Button>
+                <Button 
+                color="primary" 
+                onClick={onDeleteProject}>Yes</Button>
+                <Button 
+                color="secondary" 
+                onClick={onChangeDeleteButton}>No</Button>
             </ModalFooter>
         </Modal>
     </div>  
