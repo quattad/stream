@@ -6,11 +6,14 @@ const tasks = new Schema({
         type: String,
         required: true,
         minlength: 1,
-        maxlength: 10
+        maxlength: 20
     },
     description: {
         type: String,
         maxlength: 100
+    },
+    members: {
+        type: Array
     },
     startDate: {
         type: Date,
