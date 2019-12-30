@@ -50,13 +50,14 @@ const ProjectsTableRow = (props) => {
             className="btn-round" 
             size="md">View</Button>
         </Link>
-        <Link 
+        {/* Commented out until EditProject and AddUserSearchBar are active */}
+        {/* <Link 
         to={editProjectUri}>
             <Button 
             outline 
             className="btn-round" 
             size="md">Edit</Button>
-        </Link>
+        </Link> */}
         <Button 
         outline 
         className="btn-round" 
