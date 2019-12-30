@@ -192,7 +192,9 @@ export function ProjectDViewAddTaskForm(props) {
           onChange={onChangeTaskStartDateState}></Input>
       </FormGroup>
       <FormGroup>
-        <Label className="float-left" for="endDate">End Date</Label>
+        <Label 
+        className="float-left" 
+        for="endDate">End Date</Label>
         <Input
           type="date"
           id="endDate"
