@@ -1,22 +1,18 @@
 import React from "react";
-import {Redirect} from 'react-router'
+import { Redirect } from "react-router";
 import { Label, Button, Card, CardBody, CardFooter, Form, Input, InputGroup, Container, Col } from "reactstrap";
 import axios from "axios";
 
 // Import child components
-import TransparentFooter from './TransparentFooter'
+import TransparentFooter from './TransparentFooter';
+import SearchBar from './AddUserSearchBar.components';
 
-// 
-import {fetchUserProfile, useAuthContext} from "../services/AuthReducer"
+// Import services
+import { fetchUserProfile, useAuthContext } from "../services/AuthReducer";
 
-function AddNewProject() {
+const AddNewProject = () => {
   let pageHeader = React.createRef();
   const auth = useAuthContext()
-
-    // Fetch user
-    const [userState, setUserState] = React.useState({
-      'username':""
-    })
 
     // Create state to store entered username and pw
     const [projectNameState, setProjectNameState] = React.useState("");
@@ -30,27 +26,49 @@ function AddNewProject() {
 
     // Create state for redirect
     const [fireRedirectDashboard, setFireRedirectDashboard] = React.useState(false)
-    const onFireRedirectDashboard = () => {setFireRedirectDashboard(true)}
+    const onFireRedirectDashboard = () => {
+      setFireRedirectDashboard(true)
+    };
   
     // Define form save functions
-    const onChangeProjectNameState = (e) => {setProjectNameState(e.target.value)};
-
-    const onChangeProjectDescriptionState = (e) => {setProjectDescriptionState(e.target.value)};
-
-    const onChangeMembersState = (e) => {
-      setMembersState(e.target.value)
+    const onChangeProjectNameState = (e) => {
+      setProjectNameState(e.target.value);
     };
 
-    const onChangeAdminsState = (e) => {
-      setAdminsState(e.target.value)
+    const onChangeProjectDescriptionState = (e) => {
+      setProjectDescriptionState(e.target.value)
     };
 
-    const onCreateProject = async (e) => { 
-        try {
+    const onChangeMembersState = (newMembersState) => {
+      setMembersState(newMembersState);
+    };
+
+    const onChangeAdminsState = (newAdminsState) => {
+      setAdminsState(newAdminsState);
+    };
+
+    const onFocusProjectName = () => {
+      setProjectNameFocus(true);
+    };
+
+    const onBlurProjectName = () => {
+      setProjectNameFocus(false);
+    };
+
+    const onFocusProjectDescription = () => {
+      setProjectDescriptionFocus(true);
+    };
+
+    const onBlurProjectDescription = () => {
+      setProjectDescriptionFocus(false);
+    };
+
+    const onCreateProject = async () => { 
+      try {
           const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/projects/add`, {
             "name": projectNameState,
             "description": projectDescriptionState,
-            "members":membersState,
+            "members": membersState,
             "admins": adminsState
           },
           {
@@ -58,31 +76,29 @@ function AddNewProject() {
           });
     
           if (!res.data.error) {
-            console.log("added new project")
             onFireRedirectDashboard();
-
     
-        }} catch (err) {
+        }
+      } catch (err) {
           console.log(err)
         }
-      }
-  
-    // Additional form features
-  
+      };
 
+    const onFireCreateProject = () => {
+      onCreateProject();
+    };
+  
     React.useEffect(() => {
+      // Additional form features
       document.body.classList.add("login-page");
       document.body.classList.add("sidebar-collapse");
       document.documentElement.classList.remove("nav-open");
       window.scrollTo(0, 0);
       document.body.scrollTop = 0;
       
+      // Fetch user data and set admin to hold username of current logged-in user
       (async () => {
         const user = await fetchUserProfile(auth)
-        setUserState({
-          'username':user.username,
-        })
-        setMembersState([user.username])
         setAdminsState([user.username])
       })();
       
@@ -95,35 +111,77 @@ function AddNewProject() {
   return (
     <>
     {fireRedirectDashboard && <Redirect to="/dashboard">push={true}</Redirect>}
-      <div className="page-header clear-filter" filter-color="blue">
-        <div className="page-header-image" style={{backgroundImage: "url(" + require("../assets/img/header.jpg") + ")"}} ref={pageHeader}></div>
-          <Container><h1 className="float-left">Create New Project</h1></Container>
+      <div 
+      className="page-header clear-filter" 
+      filter-color="blue">
+        <div 
+        className="page-header-image" 
+        style={{backgroundImage: "url(" + require("../assets/img/header.jpg") + ")"}} 
+        ref={pageHeader}></div>
           <Container>
-            <Col className="mr-auto" md="6">
-              <Card className="card-plain">
-                <Form action="" className="form" method="">
+            <h1 
+            className="float-left">Create New Project</h1>
+          </Container>
+          <Container>
+            <Col 
+            className="mr-auto" 
+            md="6">
+              <Card 
+              className="card-plain">
+                <Form 
+                action="" 
+                className="form" 
+                method="">
                   <CardBody>
-                    <Label className="float-left"><h6>Project Name</h6></Label>
-                    <InputGroup className={"no-border input-lg" + (projectNameFocus ?  "input-group-focus" : "")}>
-                      <Input type="text"
-                        onChange={(e)=>onChangeProjectNameState(e)}
-                        onFocus={() => setProjectNameFocus(true)}
-                        onBlur={() => setProjectNameFocus(false)}></Input>
+                    <Label 
+                    className="float-left">
+                      <h6>Project Name</h6>
+                    </Label>
+                    <InputGroup 
+                    className={"no-border input-lg" + (projectNameFocus ?  "input-group-focus" : "")}>
+                      <Input 
+                      type="text"
+                      onChange={onChangeProjectNameState}
+                      onFocus={onFocusProjectName}
+                      onBlur={onBlurProjectName}></Input>
                     </InputGroup>
-                    <Label className="float-left"><h6>Project Description</h6></Label>
-                    <InputGroup className={"no-border input-lg" + (projectDescriptionFocus ? " input-group-focus" : "")}>
-                      <Input type="textarea" 
-                        onChange={(e)=>onChangeProjectDescriptionState(e)}
-                        onFocus={() => setProjectDescriptionFocus(true)}
-                        onBlur={() => setProjectDescriptionFocus(false)}></Input>
+                    <Label 
+                    className="float-left">
+                      <h6>Project Description</h6>
+                    </Label>
+                    <InputGroup 
+                    className={"no-border input-lg" + (projectDescriptionFocus ? " input-group-focus" : "")}>
+                      <Input 
+                      type="textarea" 
+                      onChange={onChangeProjectDescriptionState}
+                      onFocus={onFocusProjectDescription}
+                      onBlur={onBlurProjectDescription}>
+                      </Input>
                     </InputGroup>
-                    <Label className="float-left"><h6>Add Members</h6></Label>
-                    <InputGroup>{membersState}</InputGroup>
+                    <Label 
+                    className="float-left">
+                      <h6>Add Members</h6>
+                    </Label>
+                    <InputGroup>
+                      <SearchBar
+                      onChangeParentCompUsersState={onChangeMembersState}
+                      searchBarId={1}/>
+                    </InputGroup>
                     <Label className="float-left"><h6>Add Admins</h6></Label>
-                    <InputGroup>{adminsState}</InputGroup>
+                    <InputGroup>
+                      <SearchBar
+                      onChangeParentCompUsersState={onChangeAdminsState}
+                      searchBarId={2}/>
+                    </InputGroup>
                   </CardBody>
-                  <CardFooter className="text-center">
-                    <Button outline block className="btn-round" onClick={(e) => {onCreateProject()}} size="lg">Create Project</Button>
+                  <CardFooter 
+                  className="text-center">
+                    <Button 
+                    outline 
+                    block 
+                    className="btn-round" 
+                    onClick={onFireCreateProject} 
+                    size="lg">Create Project</Button>
                   </CardFooter>
                 </Form>
               </Card>
@@ -133,6 +191,6 @@ function AddNewProject() {
       </div>
     </>
   );
-}
+};
 
 export default AddNewProject;
