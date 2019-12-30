@@ -1,4 +1,5 @@
 require('dotenv').config();
+let path = require('path');
 
 const express = require('express');
 const cors = require('cors');
@@ -12,10 +13,10 @@ const port = process.env.PORT || 5000
 
 // Middleware - must be used in ALL files that create an Express app, otherwise will not be able to parse POST requests
 app.use(cors({credentials:true, origin: process.env.BASE_CLIENT_URL}))
-app.use(express.json())
+app.use(express.json());
 
 // Serve client-side code after building
-// app.use(express.static(path.join(__dirname, '/client/build')))
+// app.use(express.static(path.join(__dirname, '../build')));
 
 app.listen(port, () => console.log(`Server started on port: ${port}`))
 

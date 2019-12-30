@@ -3,7 +3,7 @@ import { Container } from "reactstrap";
 
 import TransparentFooter from './TransparentFooter'
 
-function HomePrivate() {
+const About = () => {
   let pageHeader = React.createRef();
 
   React.useEffect(() => {
@@ -27,12 +27,15 @@ function HomePrivate() {
 
   return (
     <>
-      <div className="page-header clear-filter" filter-color="blue">
-        <div className="page-header-image" 
-        style={{
-            backgroundImage: "url(" + require("../assets/img/header.jpg") + ")"
-            }} ref={pageHeader}></div>
-          <div className="content-center brand">
+      <div 
+      className="page-header clear-filter" 
+      filter-color="blue">
+        <div 
+        className="page-header-image" 
+        style={{backgroundImage: "url(" + require("../assets/img/header.jpg") + ")"}} 
+        ref={pageHeader}></div>
+          <div 
+          className="content-center brand">
               <Container>
                   <h1>About Page</h1>
               </Container>
@@ -43,4 +46,4 @@ function HomePrivate() {
   );
 }
 
-export default HomePrivate;
+export default About;
