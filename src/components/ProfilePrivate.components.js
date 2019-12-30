@@ -1,32 +1,36 @@
 /*eslint-disable*/
 import React from "react";
 import { Button, Container, Form, Input, InputGroup, Col} from "reactstrap";
-
-import TransparentFooter from './TransparentFooter'
 import axios from "axios";
 
-import {useAuthContext, checkAuth} from "../services/AuthReducer"
+// Import child components
+import TransparentFooter from './TransparentFooter';
+import ProjectSpinner from './ProjectSpinner.components';
 
-function HomePrivate() {
+// Import services
+import { useAuthContext, checkAuth } from "../services/AuthReducer";
+
+const ProfilePrivate = () => {
   const auth = useAuthContext();
 
   const fetchUserProfile = async () => {
     try {
-    const res = await axios.get(`${process.env.REACT_APP_BASE_SERVER_URL}/users/profile`, 
-    {
-      withCredentials: true
-    })
+      const res = await axios.get(`${process.env.REACT_APP_BASE_SERVER_URL}/users/profile`, 
+      {
+        withCredentials: true
+      });
+      
+      if (!res.data.error) {
+        setUsernameState(res.data.username);
+        setFirstNameState(res.data.firstname);
+        setLastNameState(res.data.lastname);
+      };
     
-    if (!res.data.error) {
-      setUsernameState(res.data.username)
-      setFirstNameState(res.data.firstname)
-      setLastNameState(res.data.lastname)
-    }
-  } catch (err) {
-    console.log(err)
-    auth.handleLogout()   
-  }
-}
+    } catch (err) {
+      console.log(err);
+      auth.handleLogout();
+  };
+};
 
   // Define states
   const[usernameState, setUsernameState] = React.useState("")
@@ -35,14 +39,44 @@ function HomePrivate() {
   const[editProfileState, setEditProfileState] = React.useState("")
 
   // Define functions to set states of register form variables
-  const onChangeUsername = (e) => {setUsernameState(e.target.value)};
-  const onChangeFirstName = (e) => {setFirstNameState(e.target.value)};
-  const onChangeLastName = (e) => {setLastNameState(e.target.value)};
+  const onChangeUsername = (e) => {
+    setUsernameState(e.target.value);
+  };
+  const onChangeFirstName = (e) => {
+    setFirstNameState(e.target.value);
+  };
+  const onChangeLastName = (e) => {
+    setLastNameState(e.target.value);
+  };
 
   // Define state variables for focus feature
   const [usernameFocus, setUsernameFocus] = React.useState(false);
   const [firstNameFocus, setFirstNameFocus] = React.useState(false);
   const [lastNameFocus, setLastNameFocus] = React.useState(false);
+
+  const onFireUsernameFocus = () => {
+    setUsernameFocus(true);
+  };
+
+  const onFireUsernameBlur = () => {
+    setUsernameFocus(false);
+  };
+
+  const onFireFirstNameFocus = () => {
+    setFirstNameFocus(true);
+  };
+
+  const onFireFirstNameBlur = () => {
+    setFirstNameFocus(false);
+  };
+
+  const onFireLastNameFocus = () => {
+    setLastNameFocus(true);
+  };
+
+  const onFireLastNameBlur = () => {
+    setLastNameFocus(false);
+  };
 
   // Define function for form submission to update user profile
   const saveUserProfile = async (e) => {
@@ -52,20 +86,27 @@ function HomePrivate() {
       "username": usernameState,
       "firstname": firstNameState,
       "lastname": lastNameState,
-    }
+    };
 
     try {
       const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/users/update`, 
-      updateUser, 
+      updateUser,
       {
         withCredentials:true
-      })
-      
-      console.log(res.data)
+      }
+      );
+    
     } catch (err) {
       console.log(err)
-    }
+    };
+  };
+
+const onFireSaveProfile = (e) => {
+  if (editProfileState) {
+    saveUserProfile(e);
   }; 
+  setEditProfileState(!editProfileState);
+};
 
   let pageHeader = React.createRef();
 
@@ -95,61 +136,91 @@ function HomePrivate() {
 
   return (
     <>
-      <div className="page-header clear-filter" filter-color="blue">
-        <div className="page-header-image" style={{
-          backgroundImage: "url(" + require("../assets/img/header.jpg") + ")"}}ref={pageHeader}>
+      <div 
+      className="page-header clear-filter" 
+      filter-color="blue">
+        <div 
+        className="page-header-image" 
+        style={{backgroundImage: "url(" + require("../assets/img/header.jpg") + ")"}}
+        ref={pageHeader}>
         </div>
         <Container>
-        <Form onSubmit = {saveUserProfile} className="form" method="POST">
-        <Col className="ml-auto mr-auto" md="4">
-          <h5 className="title">Username</h5>
-        <h5 className="description" hidden={editProfileState}>{usernameState}</h5>
-        <InputGroup 
-        hidden={!editProfileState} className={"no-border input-lg" + (usernameFocus ? " input-group-focus" : "")}>
-          <Input value={usernameState} type="text" style={{color:"#ffffff"}}
-          onChange = {(e) => onChangeUsername(e)}
-          onFocus={() => setUsernameFocus(true)} 
-          onBlur={() => setUsernameFocus(false)}></Input>
-        </InputGroup>
-          <h5 className="title">First Name</h5>
-        <h5 className="description" hidden={editProfileState}>{firstNameState}</h5>
-        <InputGroup 
-        hidden={!editProfileState} className={"no-border input-lg" + (firstNameFocus ? " input-group-focus" : "")}>
-          <Input value={firstNameState} type="text" style={{color:"#ffffff"}}
-          onChange = {(e) => onChangeFirstName(e)}
-          onFocus={() => setFirstNameFocus(true)} 
-          onBlur={() => setFirstNameFocus(false)}></Input>
-        </InputGroup>
-          <h5 className="title">Last Name</h5>
-        <h5 className="description" hidden={editProfileState}>{lastNameState}</h5>
-        <InputGroup 
-        hidden={!editProfileState} className={"no-border input-lg" + (lastNameFocus ? " input-group-focus" : "")}>
-          <Input value={lastNameState} type="text" style={{color:"#ffffff"}}
-          onChange = {(e) => onChangeLastName(e)}
-          onFocus={() => setLastNameFocus(true)} 
-          onBlur={() => setLastNameFocus(false)}></Input>
-        </InputGroup>
-          <Button outline className="btn-round" size="md"
-            onClick={(e) => {
-              if (editProfileState) {saveUserProfile(e)} 
-              setEditProfileState(!editProfileState)
-          }}>{editProfileState ? ("Save Profile") : ("Edit Profile")}
-          </Button>
-          <Container>
-          <Button outline className="btn-round" size="md"
-            onClick={() => {}}>Change Password
-          </Button>
-          <Button outline className="btn-round" size="md"
-            onClick={() => {}}>Change Email
-          </Button>
-          </Container>
-          </Col>
+          <Form 
+          onSubmit={saveUserProfile} 
+          className="form" 
+          method="POST">
+            <Col 
+            className="ml-auto mr-auto" 
+            md="4">
+              <h5 
+              className="title">Username</h5>
+              <h5 
+              className="description" 
+              hidden={editProfileState}>{usernameState ? usernameState : <ProjectSpinner />}</h5>
+              <InputGroup 
+              hidden={!editProfileState} 
+              className={"no-border input-lg" + (usernameFocus ? " input-group-focus" : "")}>
+                <Input 
+                value={usernameState}
+                type="text" 
+                style={{color:"#ffffff"}}
+                onChange = {onChangeUsername}
+                onFocus={onFireFirstNameFocus} 
+                onBlur={onFireFirstNameBlur}></Input>
+                </InputGroup>
+                <h5 
+                className="title">First Name</h5>
+                <h5 
+                className="description" 
+                hidden={editProfileState}>{firstNameState ? firstNameState : <ProjectSpinner />}</h5>
+                <InputGroup 
+                hidden={!editProfileState} 
+                className={"no-border input-lg" + (firstNameFocus ? " input-group-focus" : "")}>
+                  <Input 
+                  value={firstNameState} 
+                  type="text" 
+                  style={{color:"#ffffff"}}
+                  onChange = {onChangeFirstName}
+                  onFocus={onFireUsernameFocus} 
+                  onBlur={onFireUsernameBlur}></Input>
+                  </InputGroup>
+                  <h5 
+                  className="title">Last Name</h5>
+                  <h5 
+                  className="description" 
+                  hidden={editProfileState}>{lastNameState ? lastNameState : <ProjectSpinner />}</h5>
+                  <InputGroup 
+                  hidden={!editProfileState} 
+                  className={"no-border input-lg" + (lastNameFocus ? " input-group-focus" : "")}>
+                    <Input 
+                    value={lastNameState} 
+                    type="text" style={{color:"#ffffff"}}
+                    onChange = {onChangeLastName}
+                    onFocus={onFireLastNameFocus} 
+                    onBlur={onFireLastNameBlur}></Input>
+                  </InputGroup>
+                  <Button 
+                  outline 
+                  className="btn-round" 
+                  size="md"
+                  onClick={onFireSaveProfile}>{editProfileState ? ("Save Profile") : ("Edit Profile")}
+                  </Button>
+                  {/* Commented until Change Password and Change Email features implemented */}
+                  {/* <Container> */}
+                  {/* <Button outline className="btn-round" size="md"
+                    onClick={() => {}}>Change Password
+                  </Button>
+                  <Button outline className="btn-round" size="md"
+                    onClick={() => {}}>Change Email
+                  </Button> */}
+                  {/* </Container> */}
+            </Col>
           </Form>                                                 
         </Container>
       <TransparentFooter />
       </div>
     </>
   );
-}
+};
 
-export default HomePrivate;
+export default ProfilePrivate;
