@@ -14,7 +14,7 @@ export const dateStrToMoment = (input) => {
  */
 export const dateStrToJSDate = (input) => {
     let jsDate = moment.utc(input, "YYYY-MM-DD").toDate();
-    return jsDate.setHours(0,0,0,0)
+    return jsDate
   };
 
 
