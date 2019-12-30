@@ -1,22 +1,27 @@
 import React from 'react'
-import {Redirect} from 'react-router'
+import { Redirect } from 'react-router'
 
-import {Button} from 'reactstrap'
+import { Button } from 'reactstrap'
 
-function ProjectsTableButton () {
-    const [fireRedirectAddProject, setFireRedirectAddProject] = React.useState(false)
+const ProjectsTableButton = () => {
+    const [fireRedirectAddProject, setFireRedirectAddProject] = React.useState(false);
+
+    const onFireRedirectAddProject = () => {
+        setFireRedirectAddProject(!fireRedirectAddProject);
+    };
 
     return (
     <>
-    {fireRedirectAddProject && <Redirect to="/projects/add"></Redirect>}
+    {fireRedirectAddProject && <Redirect to="/addproject"></Redirect>}
     <div className="float-right">
-        <Button outline className="btn-round" size="md" onClick={() => {}}>View All Projects</Button>
-    </div>
-    <div className="float-right">
-        <Button outline className="btn-round" size="md" onClick={() => setFireRedirectAddProject(!fireRedirectAddProject)}>Add Project</Button>
+        <Button 
+        outline 
+        className="btn-round" 
+        size="md" 
+        onClick={onFireRedirectAddProject}>Add Project</Button>
     </div> 
     </>
     )
-}
+};
 
 export default ProjectsTableButton;
