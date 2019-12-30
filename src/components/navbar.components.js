@@ -63,7 +63,7 @@ function IndexNavbar () {
           <Collapse className="justify-content-end" isOpen={collapseOpen} navbar>
             <Nav navbar>
               <NavItem>
-                <NavLink href="/about"><p>About</p></NavLink>
+                <NavLink href="/about" hidden={auth.state.isAuthenticated}><p>About</p></NavLink>
               </NavItem>
               <NavItem>
                 <NavLink href="/" hidden={!auth.state.isAuthenticated}><p>Dashboard</p></NavLink>
