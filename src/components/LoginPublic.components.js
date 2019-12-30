@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router"
+import { Redirect } from "react-router";
 import axios from "axios";
 
 import { UncontrolledPopover, PopoverBody, FormFeedback, FormGroup, Button, Card, CardBody, CardFooter, Form, Input, InputGroupAddon, Container, Col } from "reactstrap";
@@ -162,7 +162,9 @@ function LoginPage () {
                   </Container>
                   <CardBody>
                     <FormGroup className={"no-border input-lg" + (emailFocus ? " input-group-focus" : "")}>
-                      <Input id="emailField" 
+                      <Input 
+                      id="emailField"
+                      autoComplete="username" 
                       valid={emailIsValid} invalid={emailHasInput}
                       placeholder="Email"
                       onChange={(e)=>{onChangeEmail(e); checkEmailIfValid(e)}} 
@@ -176,7 +178,9 @@ function LoginPage () {
                     <FormGroup className={"no-border input-lg" + (passwordFocus ? " input-group-focus" : "")}>
                       <InputGroupAddon addonType="prepend">
                       </InputGroupAddon>
-                      <Input id="passwordField" 
+                      <Input
+                      autoComplete="current-password" 
+                      id="passwordField" 
                       valid={passwordIsValid} invalid={passwordHasInput} 
                       placeholder="Password"
                       type={(showPassword ? "password": "text")}
