@@ -5,9 +5,10 @@ import { Button, Container, Card, CardFooter, Form, Col } from 'reactstrap';
 // Import child components
 import TransparentFooter from './TransparentFooter'
 
-import {useAuthContext} from "../services/AuthReducer"
+// Import services
+import { useAuthContext } from "../services/AuthReducer"
 
-function IndexHeader() {
+const HomePublic = () => {
   const auth = useAuthContext();
   let pageHeader = React.createRef();
 
@@ -35,43 +36,41 @@ function IndexHeader() {
   return (
     <>
     {auth.state.isAuthenticated && <Redirect to='/dashboard'> push={true} </Redirect>}
-      <div className="page-header clear-filter" filter-color="blue">
-        <div className="page-header-image" 
-        style={{
-            backgroundImage: "url(" + require("../assets/img/header.jpg") + ")"
-            }} ref={pageHeader}></div>
-          <div className="content-center brand">
+      <div 
+      className="page-header clear-filter" 
+      filter-color="blue">
+        <div 
+        className="page-header-image" 
+        style={{backgroundImage: "url(" + require("../assets/img/header.jpg") + ")"}} 
+        ref={pageHeader}></div>
+          <div 
+          className="content-center brand">
             <Container>
-            <h1 className="h1-seo">Execute your projects better.</h1>
+              <h1 
+              className="h1-seo">Execute your projects better.</h1>
             <h3>Stream allows your team to better organize your people for optimum resource allocation.</h3>
             </Container>
             <br />
             <Container>
-            <Col className="ml-auto mr-auto" md="4">
-              <Card className="card-login card-plain">
-                <Form action="" className="form" method="">
-                  <CardFooter className="text-center">
+            <Col 
+            className="ml-auto mr-auto" 
+            md="4">
+              <Card 
+              className="card-login card-plain">
+                <Form 
+                action="" 
+                className="form" 
+                method="">
+                  <CardFooter 
+                  className="text-center">
                     <Button
-                      href="/register"
-                      block
-                      className="btn-neutral btn-round"
-                      color="info"
-                      onClick={()=> "window.location='./register'"}
-                      size="lg"
-                    >
-                      Get Started
-                    </Button>
-                    <div className="pull-center">
-                      <h6>
-                        <a
-                          className="link"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          Need help?
-                        </a>
-                      </h6>
-                    </div>
+                    href="/register"
+                    block
+                    className="btn-neutral btn-round"
+                    color="info"
+                    onClick={()=> "window.location='./register'"}
+                    size="lg"
+                    >Get Started</Button>
                   </CardFooter>
                 </Form>
               </Card>
@@ -84,4 +83,4 @@ function IndexHeader() {
   );
 }
 
-export default IndexHeader;
+export default HomePublic;
