@@ -1,0 +1,86 @@
+{
+  "name": "stream-project-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "moment": "^2.24.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-scripts": "3.1.1"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less)$": "identity-obj-proxy"
+    },
+    "globalSetup": "<rootDir>/src/global-setup.js",
+    "globalTeardown": "<rootDir>/src/global-teardown.js"
+  },
+  "homepage": "https://quattad.github.io/stream/",
+  "scripts": {
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
+    "client": "react-scripts start",
+    "test-frontend": "react-scripts test",
+    "e2e": "cypress open",
+    "lint": "eslint src/**/*.js test/**/*.js",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "devDependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-react": "^7.0.0",
+    "axios": "^0.19.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^24.9.0",
+    "babel-plugin-inline-react-svg": "^1.1.0",
+    "bootstrap": "^4.3.1",
+    "chai": "^4.2.0",
+    "concurrently": "^4.1.2",
+    "cookie-parser": "^1.4.4",
+    "cypress": "^3.4.1",
+    "d3": "^5.14.2",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "eslint": "^6.4.0",
+    "express-basic-auth": "^1.2.0",
+    "express-validator": "^6.2.0",
+    "gh-pages": "^2.1.1",
+    "identity-obj-proxy": "^3.0.0",
+    "jquery": "^3.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "mocha": "^6.2.0",
+    "popper.js": "^1.15.0",
+    "react-autosuggest": "^9.4.3",
+    "react-beautiful-dnd": "^12.1.1",
+    "react-router-dom": "^5.0.1",
+    "react-test-renderer": "^16.9.0",
+    "reactstrap": "^8.1.1",
+    "supertest": "^4.0.2",
+    "throttle-debounce": "^2.1.0",
+    "validator": "^12.0.0"
+  },
+  "keywords": [],
+  "author": "Jonathan Quah <github.com/quattad>",
+  "license": "ISC",
+  "proxy": "http://localhost:5000"
+}

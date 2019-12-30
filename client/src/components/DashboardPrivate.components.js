@@ -2,10 +2,10 @@ import React from "react";
 import {Container} from "reactstrap";
 
 // Import child components
-import WelcomeText from "./dashboard/WelcomeText.components"
-import ProjectsTable from "./dashboard/ProjectsTable.components"
-import TeamTable from "./dashboard/TeamTable.components"
-import TransparentFooter from "./TransparentFooter"
+import WelcomeText from "./dashboard/WelcomeText.components";
+import ProjectsTable from "./dashboard/ProjectsTable.components";
+// import TeamTable from "./dashboard/TeamTable.components";
+import TransparentFooter from "./TransparentFooter";
 
 // Import services
 import {useAuthContext, checkAuth, fetchUserProfile} from "../services/AuthReducer"

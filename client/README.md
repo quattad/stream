@@ -1,7 +1,5 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-This is the base README file for Stream.
-
 ## Available Scripts
 
 In the project directory, you can run:

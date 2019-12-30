@@ -38,13 +38,13 @@ const AddUserSearchBar = (props) => {
                 if (res.data.usernames.length > 0) {
                     pushElement();
                     setShowUsernameInputPopover(!showUsernameInputPopover);
-                    setUsernameInputPopoverMsg("Username " + `${usernameInput}` +" added.");
+                    setUsernameInputPopoverMsg(`Username ${usernameInput} added.`);
                 };
 
             } catch (err) {
                 if (err.response.data.description === "NO_USERS_FOUND") {
                     setShowUsernameInputPopover(!showUsernameInputPopover);
-                    setUsernameInputPopoverMsg("Username " + `${usernameInput}` + " does not exist.");
+                    setUsernameInputPopoverMsg(`Username ${usernameInput} does not exist.`);
                 } else {
                     console.log(err)
                 }

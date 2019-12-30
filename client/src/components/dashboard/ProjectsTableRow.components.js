@@ -13,7 +13,7 @@ const ProjectsTableRow = (props) => {
     };
 
     const projectDViewUri = `/projects/${props.project}`;
-    const editProjectUri = `/editproject/${props.project}`;
+    // const editProjectUri = `/editproject/${props.project}`;
 
     const onDeleteProject = async () => {
         try {

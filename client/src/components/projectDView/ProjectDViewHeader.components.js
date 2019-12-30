@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'reactstrap';
 
 import ProjectDViewText from './ProjectDViewHeaderText.components';
 import ProjectDViewButtons from './ProjectDViewHeaderButtons.components';
-import ProjectDViewDropdown from './ProjectDViewHeaderDropdown.components';
+// import ProjectDViewDropdown from './ProjectDViewHeaderDropdown.components';
 
 // Import context
 import {useProjectDViewContext} from './ProjectDViewContext';

@@ -18,7 +18,7 @@ import DashboardPrivate from "./components/DashboardPrivate.components"
 import ProfilePrivate from "./components/ProfilePrivate.components"
 import AddNewProject from "./components/AddNewProject.components"
 import ProjectDView from "./components/projectDView/ProjectDView.components"
-import EditProject from "./components/EditProject.components"
+// import EditProject from "./components/EditProject.components"
 
 // Import auth components
 import PrivateRoute from "./components/PrivateRoute.components"
@@ -47,7 +47,7 @@ function App() {
         <PrivateRoute exact path="/profile" component={ProfilePrivate} />
         <PrivateRoute exact path="/addproject" component={AddNewProject} />
         <PrivateRoute exact path="/projects/:projectName" component={ProjectDView}/>
-        <PrivateRoute exact path="/editproject/:projectName" component={EditProject}/>
+        {/* <PrivateRoute exact path="/editproject/:projectName" component={EditProject}/> */}
       </Router>
     </AuthContext.Provider>
     );

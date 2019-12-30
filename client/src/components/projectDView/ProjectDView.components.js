@@ -4,8 +4,8 @@ import axios from 'axios'
  
 import ProjectDViewHeader from './ProjectDViewHeader.components';
 import ProjectDViewGantt from './ProjectDViewGantt.components';
-import ProjectDViewRaci from './ProjectDViewRaci.components';
-import ProjectDViewProjectDashboard from './ProjectDViewProjectDashboard.components';
+// import ProjectDViewRaci from './ProjectDViewRaci.components';
+// import ProjectDViewProjectDashboard from './ProjectDViewProjectDashboard.components';
 import TransparentFooter from '../TransparentFooter';
  
 import { ProjectDViewProvider } from './ProjectDViewContext';
@@ -23,7 +23,7 @@ function ProjectDView(props) {
     let features = [];
 
     if (projectData) {
-        projectData.features.map((feature, index) => {
+        projectData.features.forEach((feature, index) => {
             let featureIndex = index;
             features.push(
                 {
@@ -31,7 +31,7 @@ function ProjectDView(props) {
                     index: featureIndex
                 });
 
-            feature.tasks.map(task => {
+            feature.tasks.forEach(task => {
                 task.startDate = dateStrToJSDate(task.startDate);
                 task.endDate = dateStrToJSDate(task.endDate);
                 task.featureIndex = featureIndex;

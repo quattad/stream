@@ -27,13 +27,13 @@ class GanttChart extends Component {
        // Shows create task msg if spinner still shows after 3000ms / 3 seconds
        setTimeout(
            () => {
-           if (this.state.showSpinner == true) {
+           if (this.state.showSpinner === true) {
                this.setState({
                    showSpinner: false,
                    showInitialMsg: true
                })   
            }
-       }, 3000);
+       }, 5000);
        
    };
 

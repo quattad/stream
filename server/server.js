@@ -16,7 +16,15 @@ app.use(cors({credentials:true, origin: process.env.BASE_CLIENT_URL}))
 app.use(express.json());
 
 // Serve client-side code after building
-// app.use(express.static(path.join(__dirname, '../build')));
+if (process.env.NODE_ENV === "PRODUCTION") {
+    // Setup static folder
+    app.use(
+        express.static(path.join(__dirname, "client/build")));
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+    });
+};
 
 app.listen(port, () => console.log(`Server started on port: ${port}`))
 
