@@ -3,9 +3,10 @@ import React from 'react'
 // reactstrap components./ProjectsTableHeader.components
 import { Container } from "reactstrap";
 
-import ProjectsTableHeader from './ProjectsTableHeader.components'
-import ProjectsTableButton from "./ProjectsTableButton.components"
-import ProjectsTableRow from "./ProjectsTableRow.components"
+import ProjectsTableHeader from "./ProjectsTableHeader.components";
+import ProjectsTableButton from "./ProjectsTableButton.components";
+import ProjectsTableRow from "./ProjectsTableRow.components";
+import ProjectSpinner from "../ProjectSpinner.components";
 
 import { useDashboardContext } from "../DashboardPrivate.components"
 
@@ -15,13 +16,17 @@ function ProjectsTable () {
     const renderedProjects = (() => {
         if (dbContext.userState.projects && dbContext.userState.projects.length > 0) {
             let projects = dbContext.userState.projects
+            
             return projects.map(project =>
-            <div className="row">
-                <Container><ProjectsTableRow key={project.name} project={project} /></Container>
+            <div className="row" key={project}>
+                <Container key={project}><ProjectsTableRow key={project} project={project} /></Container>
             </div>
             )
-        } else {
+        } else if (dbContext.userState.projects && dbContext.userState.projects.length < 1) {
             return <p>You currently have no projects.</p>
+        }
+        else {
+            return <ProjectSpinner />
         }
     })();
 
@@ -33,7 +38,7 @@ function ProjectsTable () {
             <div className="float-right"><ProjectsTableButton /></div>
         </Container>
     </div>
-    {renderedProjects}
+    {renderedProjects ? renderedProjects : <ProjectSpinner />}
     </>
     )
 }
