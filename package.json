@@ -21,7 +21,7 @@
     "globalSetup": "<rootDir>/src/global-setup.js",
     "globalTeardown": "<rootDir>/src/global-teardown.js"
   },
-  "homepage": "https://stream.github.io",
+  "homepage": "https://quattad.github.io/stream/",
   "scripts": {
     "predeploy": "yarn run build",
     "deploy":"gh-pages -d build",
