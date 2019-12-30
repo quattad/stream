@@ -1,14 +1,14 @@
 import React from 'react'
-import {Redirect} from 'react-router'
+import { Redirect } from 'react-router'
 import axios from "axios";
 
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, NavLink } from 'reactstrap';
 
 // Import authContext to check for authentication state; navbarContext to fetch username to render
-import {useAuthContext} from '../../services/AuthReducer'
-import {useNavbarContext} from "../Navbar.components"
+import { useAuthContext } from '../../services/AuthReducer'
+import { useNavbarContext } from "../Navbar.components"
 
-function NavbarProfile () {
+const NavbarProfile = () => {
     const auth = useAuthContext();
     const navbarContext = useNavbarContext();
 
