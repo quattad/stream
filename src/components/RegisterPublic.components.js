@@ -3,26 +3,13 @@ import axios from 'axios';
 import { Redirect } from 'react-router'
 
 // reactstrap components
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  Form,
-  FormGroup,
-  Input,
-  Container,
-  Col,
-  FormFeedback,
-  UncontrolledPopover,
-  PopoverBody
-} from "reactstrap";
+import { Button, Card, CardBody, CardFooter, Form, FormGroup, Input, Container, Col, FormFeedback, UncontrolledPopover, PopoverBody } from "reactstrap";
 
 // core components
 import Navbar from "./Navbar.components";
 import TransparentFooter from "./TransparentFooter";
 
-const LoginPage = () => {
+const RegisterPublic = () => {
 
   // Define state variables for register form
   const [usernameState, setUsernameState] = React.useState("")
@@ -40,7 +27,7 @@ const LoginPage = () => {
   const usernameRegex = RegExp(/^[A-Za-z\d@$!]{5,10}$/);  // can contain A-Z, a-z, special chars @$!, between 5 to 10
   const firstNameRegex = RegExp(/^[A-Za-z]{1,10}$/); // can contain A-z, a-z, char length between 1 to 10
   const lastNameRegex = RegExp(/^[A-Za-z]{1,10}$/); // can contain A-z, a-z, char length between 1 to 10
-  const emailRegex = RegExp(/(?:[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/)
+  const emailRegex = RegExp(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/)
   const passwordRegex = RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/);
 
   // Form validity hooks
@@ -160,33 +147,49 @@ const LoginPage = () => {
 
   // Define functions to set states of register form variables
   const onChangeUsername = (e) => {
-    setUsernameState(e.target.value)
+    setUsernameState(e.target.value);
+    checkUsernameIsValid(e);
   };
+
   const onChangeFirstName = (e) => {
-    setFirstNameState(e.target.value)
+    setFirstNameState(e.target.value);
+    checkFirstNameIsValid(e);
   };
+
   const onChangeLastName = (e) => {
-    setLastNameState(e.target.value)
+    setLastNameState(e.target.value);
+    checkLastNameIsValid(e);
   };
+
   const onChangeEmail = (e) => {
-    setEmailState(e.target.value)
+    setEmailState(e.target.value);
+    checkEmailIsValid(e);
   };
+
   const onChangePassword = (e) => {
-    setPasswordState(e.target.value)
+    setPasswordState(e.target.value);
+    checkPasswordIsValid(e);
   };
-  const onFireRedirect = (e) => {
-    setFireRedirect(true)
-  }
-  const onShowPassword = (e) => {
-    setShowPassword(!showPassword)
-  }
-  const onShowPasswordButton = (e) => {
-    setShowPasswordButton(!showPasswordButton)
-  }
+
+  const onFireRedirectLogin = () => {
+    setFireRedirect(true);
+  };
+
+  const onShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const onShowPasswordButton = () => {
+    setShowPasswordButton(!showPasswordButton);
+  };
+
+  const onFireShowPassword = (e) => {
+      onShowPassword(e);
+      onShowPasswordButton(e);
+  };
 
   // Define function for form submission
-  const submitForm = (e) => {
-    console.log('Run submitForm...')
+  const submitForm = async (e) => {
     e.preventDefault();
 
     const user = {
@@ -197,17 +200,66 @@ const LoginPage = () => {
       "password": passwordState
     }
 
-    // Send JSON object to backend endpoint
-    axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/users/add`, user)
-      .then(res => {
-        if (!res.data.error) {
-          onFireRedirect(e)
-        } else {
-          console.log("Error: " + res.data.error)
-        }
-      })
-      .catch(err => console.log("Error: " + err))
-  }; 
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/users/add`, user);
+
+      if (!res.data.error) {
+        onFireRedirectLogin(e);
+      };
+      
+    } catch (err) {
+      // Extract first error from validationError
+      const error = err.response.data.description["errors"][0];
+
+      /** Error handling for registration */
+      if (error.param === "username") {
+
+        setShowUsernamePopoverMsg(true);
+        setShowFirstNamePopoverMsg(false);
+        setShowLastNamePopoverMsg(false);
+        setShowEmailPopoverMsg(false);
+        setShowPasswordPopoverMsg(false);
+        setUsernamePopoverMsg(error.msg);
+
+      } else if (error.param === "firstname") {
+
+        setShowUsernamePopoverMsg(false);
+        setShowFirstNamePopoverMsg(true);
+        setShowLastNamePopoverMsg(false);
+        setShowEmailPopoverMsg(false);
+        setShowPasswordPopoverMsg(false);
+        setFirstNamePopoverMsg(error.msg);
+
+      } else if (error.param === "lastname") {
+
+        setShowUsernamePopoverMsg(false);
+        setShowFirstNamePopoverMsg(false);
+        setShowLastNamePopoverMsg(true);
+        setShowEmailPopoverMsg(false);
+        setShowPasswordPopoverMsg(false);
+        setLastNamePopoverMsg(error.msg);
+
+      } else if (error.param === "email") {
+
+        setShowUsernamePopoverMsg(false);
+        setShowFirstNamePopoverMsg(false);
+        setShowLastNamePopoverMsg(false);
+        setShowEmailPopoverMsg(true);
+        setShowPasswordPopoverMsg(false);
+        setEmailPopoverMsg(error.msg);
+
+      } else if (error.param === "password") {
+
+        setShowUsernamePopoverMsg(false);
+        setShowFirstNamePopoverMsg(false);
+        setShowLastNamePopoverMsg(false);
+        setShowEmailPopoverMsg(false);
+        setShowPasswordPopoverMsg(true);
+        setPasswordPopoverMsg(error.msg);
+
+      };
+    };
+  };
 
   // Define state variables for focus feature
   const [usernameFocus, setUsernameFocus] = React.useState(false);
@@ -229,93 +281,87 @@ const LoginPage = () => {
     };
   });
 
-  // BODY
   return (
     <>
       <Navbar />
       {fireRedirect && <Redirect to='/'> push={true} </Redirect>}
       <div 
-        className="page-header clear-filter" 
-        filter-color="blue">
+      className="page-header clear-filter" 
+      filter-color="blue">
         <div 
-          className="page-header-image" 
-          style={{backgroundImage: "url(" + require("../assets/img/register.jpg") + ")"}}
+        className="page-header-image" 
+        style={{backgroundImage: "url(" + require("../assets/img/register.jpg") + ")"}}
           ></div>
         <div 
-          className="content">
+        className="content">
           <Container>
             <Col 
-              className="ml-auto mr-auto" 
-              md="4">
+            className="ml-auto mr-auto" 
+            md="4">
               <Card 
-                className="card-login card-plain">
+              className="card-login card-plain">
                 <Form 
-                  onSubmit = {submitForm} 
-                  className="form" 
-                  method="POST">
+                onSubmit={submitForm} 
+                className="form" 
+                method="POST">
                   <Container>
                     <h3 
-                      className="h3 seo">
-                        Start your journey with Stream.
+                    className="h3 seo">
+                      Start your journey with Stream.
                     </h3>
                   </Container>
                 <CardBody>
                   <FormGroup 
-                    className={"no-border input-lg" + (usernameFocus ? " input-group-focus" : "")}>
+                  className={"no-border input-lg" + (usernameFocus ? " input-group-focus" : "")}>
                       <Input
-                        id="usernameField"
-                        valid={usernameIsValid}
-                        invalid={usernameHasInput} 
-                        placeholder="Username" 
-                        type="text"
-                        onChange = {(e) => {
-                          onChangeUsername(e);
-                          checkUsernameIsValid(e);
-                        }}
-                        onFocus={() => setUsernameFocus(true)} 
-                        onBlur={() => setUsernameFocus(false)}
-                      ></Input>
+                      id="usernameField"
+                      valid={usernameIsValid}
+                      invalid={usernameHasInput} 
+                      placeholder="Username" 
+                      type="text"
+                      onChange = {onChangeUsername}
+                      onFocus={() => setUsernameFocus(true)} 
+                      onBlur={() => setUsernameFocus(false)}></Input>
                       <FormFeedback>Username should be between 5 to 10 characters.</FormFeedback>
-                      <UncontrolledPopover trigger="focus" toggle={()=>{setShowUsernamePopoverMsg(false)}} placement="right" isOpen={showUsernamePopoverMsg} target="usernameField">
+                      <UncontrolledPopover 
+                      trigger="focus" 
+                      toggle={()=>{setShowUsernamePopoverMsg(false)}} 
+                      placement="right" 
+                      isOpen={showUsernamePopoverMsg} 
+                      target="usernameField">
                         <PopoverBody>{usernamePopoverMsg}</PopoverBody>
                       </UncontrolledPopover>
                     </FormGroup>
                     <FormGroup 
                       className={ "no-border input-lg" + (firstNameFocus ? " input-group-focus" : "")}>
                       <Input
-                        id="firstNameField"
-                        valid={firstNameIsValid}
-                        invalid={firstNameHasInput} 
-                        placeholder="First name" 
-                        type="text" 
-                        onChange ={(e) => {
-                          onChangeFirstName(e);
-                          checkFirstNameIsValid(e);
-                        }}
-                        onFocus={() => setFirstNameFocus(true)} 
-                        onBlur={() => setFirstNameFocus(false)} ></Input>
-                        <FormFeedback>First name should be between 1 to 10 characters.</FormFeedback>
-                        <UncontrolledPopover 
-                        trigger="focus" 
-                        toggle={()=>{setShowFirstNamePopoverMsg(false)}} 
-                        placement="right" 
-                        isOpen={showFirstNamePopoverMsg} 
-                        target="firstNameField">
+                      id="firstNameField"
+                      valid={firstNameIsValid}
+                      invalid={firstNameHasInput} 
+                      placeholder="First name" 
+                      type="text" 
+                      onChange ={onChangeFirstName}
+                      onFocus={() => setFirstNameFocus(true)} 
+                      onBlur={() => setFirstNameFocus(false)} ></Input>
+                      <FormFeedback>First name should be between 1 to 10 characters.</FormFeedback>
+                      <UncontrolledPopover 
+                      trigger="focus" 
+                      toggle={()=>{setShowFirstNamePopoverMsg(false)}} 
+                      placement="right" 
+                      isOpen={showFirstNamePopoverMsg} 
+                      target="firstNameField">
                         <PopoverBody>{firstNamePopoverMsg}</PopoverBody>
                         </UncontrolledPopover>
                     </FormGroup>
                     <FormGroup 
-                      className={"no-border input-lg" + (lastNameFocus ? " input-group-focus" : "")}>
+                    className={"no-border input-lg" + (lastNameFocus ? " input-group-focus" : "")}>
                       <Input
                       id="lastNameField"
                       valid={lastNameIsValid}
                       invalid={lastNameHasInput}
                       placeholder="Last name"
                       type="text"
-                      onChange ={(e) => {
-                        onChangeLastName(e);
-                        checkLastNameIsValid(e);
-                      }}
+                      onChange ={onChangeLastName}
                       onFocus={() => setLastNameFocus(true)}
                       onBlur={() => setLastNameFocus(false)}
                       ></Input><FormFeedback>Last name should be between 1 to 10 characters.</FormFeedback>
@@ -328,22 +374,14 @@ const LoginPage = () => {
                         <PopoverBody>{lastNamePopoverMsg}</PopoverBody>
                         </UncontrolledPopover>
                     </FormGroup>
-                    <FormGroup
-                      className={
-                        "no-border input-lg" +
-                        (emailFocus? " input-group-focus" : "")
-                      }
-                    >
+                    <FormGroup className={"no-border input-lg" + (emailFocus? " input-group-focus" : "")}>
                       <Input
                       id="emailField"
                       valid={emailIsValid}
                       invalid={emailHasInput}
                       placeholder="Email"
                       type="text"
-                      onChange = {(e) => {
-                        onChangeEmail(e);
-                        checkEmailIsValid(e);
-                      }}
+                      onChange = {onChangeEmail}
                       onFocus={() => setEmailFocus(true)}
                       onBlur={() => setEmailFocus(false)}
                       ></Input><FormFeedback>Invalid email.</FormFeedback>
@@ -356,9 +394,12 @@ const LoginPage = () => {
                         <PopoverBody>{emailPopoverMsg}</PopoverBody>
                       </UncontrolledPopover>
                     </FormGroup>
-                    <div className="container">
-                      <div className="row">
-                        <div className="col-lg">
+                    <div 
+                    className="container">
+                      <div 
+                      className="row">
+                        <div 
+                        className="col-lg">
                           <FormGroup 
                           className={"no-border input-lg" + (passwordFocus ? " input-group-focus" : "")}>
                             <Input
@@ -367,10 +408,7 @@ const LoginPage = () => {
                             invalid={passwordHasInput}
                             placeholder="Password"
                             type={(showPassword ? "password": "text")}
-                            onChange={(e)=>{
-                              onChangePassword(e);
-                              checkPasswordIsValid(e);
-                            }}
+                            onChange={onChangePassword}
                             onFocus={() => setPasswordFocus(true)}
                             onBlur={() => setPasswordFocus(false)}
                             ></Input><FormFeedback>Password must be between 8 to 20 characters, 1 uppercase and 1 lowercase letter.</FormFeedback>
@@ -389,10 +427,7 @@ const LoginPage = () => {
                             outline 
                             className="btn-round"
                             size="md"
-                            onClick={(e) => {
-                              onShowPassword(e)
-                              onShowPasswordButton(e)
-                            }}>{(showPasswordButton) ? "Show":"Hide"}
+                            onClick={onFireShowPassword}>{(showPasswordButton) ? "Show":"Hide"}
                             </Button>
                           </div>
                       </div>
@@ -432,4 +467,4 @@ const LoginPage = () => {
   );
 }
 
-export default LoginPage;
+export default RegisterPublic;
