@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/stream/static/css/main.c648cf70.chunk.css",
+    "main.js": "/stream/static/js/main.9f4acf3f.chunk.js",
+    "main.js.map": "/stream/static/js/main.9f4acf3f.chunk.js.map",
+    "runtime~main.js": "/stream/static/js/runtime~main.77693ee6.js",
+    "runtime~main.js.map": "/stream/static/js/runtime~main.77693ee6.js.map",
+    "static/css/2.266e55a5.chunk.css": "/stream/static/css/2.266e55a5.chunk.css",
+    "static/js/2.94805b78.chunk.js": "/stream/static/js/2.94805b78.chunk.js",
+    "static/js/2.94805b78.chunk.js.map": "/stream/static/js/2.94805b78.chunk.js.map",
+    "index.html": "/stream/index.html",
+    "precache-manifest.252774b6676841ec7cf79c3751a38f3c.js": "/stream/precache-manifest.252774b6676841ec7cf79c3751a38f3c.js",
+    "service-worker.js": "/stream/service-worker.js",
+    "static/css/2.266e55a5.chunk.css.map": "/stream/static/css/2.266e55a5.chunk.css.map",
+    "static/css/main.c648cf70.chunk.css.map": "/stream/static/css/main.c648cf70.chunk.css.map",
+    "static/media/header.jpg": "/stream/static/media/header.ffcc99c4.jpg",
+    "static/media/login.jpg": "/stream/static/media/login.b2101951.jpg",
+    "static/media/now-ui-kit.css": "/stream/static/media/nucleo-outline.8ebec31f.woff2",
+    "static/media/register.jpg": "/stream/static/media/register.f807b37b.jpg"
+  }
+}
