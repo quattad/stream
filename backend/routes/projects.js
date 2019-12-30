@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 // Express validator to validate form inputs
-const {check, validationResult} = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
 // Import models
 const Project = require('../models/project.model');
@@ -10,10 +10,7 @@ const Project = require('../models/project.model');
 const auth = require('./auth')
 
 // Import user services
-const {usernameToUserId, userIdToUsername} = require('../services/userServices');
-
-// Import project services
-const {projectNameToId} = require('../services/projectServices');
+const { usernameToUserId, userIdToUsername } = require('../services/userServices');
 
 // Create functionality
 router.route('/add').post(auth,
