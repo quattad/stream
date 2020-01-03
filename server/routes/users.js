@@ -158,7 +158,6 @@ router.route('/checkauth').get(auth,
 // Fetch information about single user; check if authenticated first
 router.route('/profile').get(auth,
     async (req, res) => {
-        console.log("profile endpoint hit")
         try {
             res.send(req.user)
         } catch (err) {
