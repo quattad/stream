@@ -13,6 +13,7 @@
 
 # testing
 /coverage
+/int-tests
 
 # production
 /build

@@ -11,7 +11,7 @@ const auth = require('./auth');
 router.route('/add').post(
     [
         check('username')
-            .isLength({min:5, max:10})
+            .isLength({min:5, max:30})
             .withMessage('Username must be 5 to 10 characters long.'),
         check('firstname')
             .isLength({min:1})
@@ -85,11 +85,14 @@ router.route('/login').post(
                         signed: true
                     }
 
-                    res.header('Access-Control-Allow-Origin', `${process.env.BASE_CLIENT_URL}`);
-                    res.header('Access-Control-Allow-Credentials', true);
+                    res.header('Access-Control-Allow-Origin', `${process.env.BASE_CLIENT_URL}`); // Indicates whether response can be shared with requesting code from origin
+                    res.header('Access-Control-Allow-Credentials', true); // Set response allowed to be exposed to frontend JS code
+
                     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-                    res.cookie("token", token, options)
-                    res.send()
+
+                    res.cookie("token", token, options);
+                    
+                    res.send();
                 } catch (err) {
                     /**
                      * Error Handling for user.save() */ 
@@ -155,6 +158,7 @@ router.route('/checkauth').get(auth,
 // Fetch information about single user; check if authenticated first
 router.route('/profile').get(auth,
     async (req, res) => {
+        console.log("profile endpoint hit")
         try {
             res.send(req.user)
         } catch (err) {

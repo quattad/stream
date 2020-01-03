@@ -24,7 +24,7 @@ const userSchema = new Schema(
             unique: true,
             trim: true,
             minlength: 5,
-            maxlength: 10,
+            maxlength: 30,
             es_indexed: true,
             es_boost: 2.0
         },
