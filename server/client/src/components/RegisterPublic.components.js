@@ -10,7 +10,7 @@ import Navbar from "./Navbar.components";
 import TransparentFooter from "./TransparentFooter";
 
 const RegisterPublic = () => {
-
+  
   // Define state variables for register form
   const [usernameState, setUsernameState] = React.useState("")
   const [firstNameState, setFirstNameState] = React.useState("")
@@ -24,7 +24,7 @@ const RegisterPublic = () => {
   const [showPasswordButton, setShowPasswordButton] = React.useState("Show");
 
   // Form validity regex
-  const usernameRegex = RegExp(/^[A-Za-z\d@$!]{5,10}$/);  // can contain A-Z, a-z, special chars @$!, between 5 to 10
+  const usernameRegex = RegExp(/^[A-Za-z\d@$!]{5,30}$/);  // can contain A-Z, a-z, special chars @$!, between 5 to 10
   const firstNameRegex = RegExp(/^[A-Za-z]{1,10}$/); // can contain A-z, a-z, char length between 1 to 10
   const lastNameRegex = RegExp(/^[A-Za-z]{1,10}$/); // can contain A-z, a-z, char length between 1 to 10
   const emailRegex = RegExp(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/)
@@ -322,7 +322,7 @@ const RegisterPublic = () => {
                       onChange = {onChangeUsername}
                       onFocus={() => setUsernameFocus(true)} 
                       onBlur={() => setUsernameFocus(false)}></Input>
-                      <FormFeedback>Username should be between 5 to 10 characters.</FormFeedback>
+                      <FormFeedback>Username should be between 5 to 30 characters.</FormFeedback>
                       <UncontrolledPopover 
                       trigger="focus" 
                       toggle={()=>{setShowUsernamePopoverMsg(false)}} 
