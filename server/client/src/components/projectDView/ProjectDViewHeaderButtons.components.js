@@ -4,7 +4,7 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Row, Col, Button,
 import { ProjectDViewAddFeatureForm } from './ProjectDViewAddFeatureForm.components';
 import { ProjectDViewAddTaskForm } from './ProjectDViewAddTaskForm.components';
 
-function ProjectDViewHeaderButtons() {
+const ProjectDViewHeaderButtons = () => {
     const [showAddFeatureModal, setShowAddFeatureModal] = React.useState(false);
     const [showAddTaskModal, setShowAddTaskModal] = React.useState(false);
 
@@ -31,36 +31,61 @@ function ProjectDViewHeaderButtons() {
     return (
         <>
         <Row>
-            <Col xs="4" />
-            <Col xs="4" />
-            <Col xs="4">
-                <Dropdown isOpen={dropDownState} toggle={onFireDropDown}>
-                    <DropdownToggle caret outline className="btn-dropdown btn-round">
+            <Col 
+            xs="4" />
+            <Col 
+            xs="4" />
+            <Col 
+            xs="4">
+                <Dropdown 
+                isOpen={dropDownState} 
+                toggle={onFireDropDown}>
+                    <DropdownToggle 
+                    caret 
+                    outline 
+                    className="btn-dropdown btn-round">
                         New
                     </DropdownToggle>
-                    <DropdownMenu right>
-                        <DropdownItem onClick = {toggleAddFeatureModal}>Feature</DropdownItem>
-                        <DropdownItem onClick = {toggleAddTaskModal}>Task</DropdownItem>
+                    <DropdownMenu 
+                    right>
+                        <DropdownItem 
+                        onClick={toggleAddFeatureModal}>Feature</DropdownItem>
+                        <DropdownItem 
+                        onClick={toggleAddTaskModal}>Task</DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
-                <Modal isOpen={showAddFeatureModal} toggle={toggleAddFeatureModal}>
-                    <ModalHeader>Add Feature</ModalHeader>
+                <Modal 
+                isOpen={showAddFeatureModal} 
+                toggle={toggleAddFeatureModal}>
+                    <ModalHeader>New Feature</ModalHeader>
                     <ModalBody>
-                        <ProjectDViewAddFeatureForm onFireCreateFeature={onFireCreateFeature}/>
+                        <ProjectDViewAddFeatureForm 
+                        onFireCreateFeature={onFireCreateFeature}/>
                     </ModalBody>
                     <ModalFooter>
-                        <Button className="btn-info" onClick={onChangeCreateFeatureButton}>Create Feature</Button>
-                        <Button className="btn-secondary" onClick={toggleAddFeatureModal}>Cancel</Button>
+                        <Button 
+                        className="btn-info" 
+                        onClick={onChangeCreateFeatureButton}>Create Feature</Button>
+                        <Button 
+                        className="btn-secondary" 
+                        onClick={toggleAddFeatureModal}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
-                <Modal isOpen={showAddTaskModal} toggle={toggleAddTaskModal}>
-                <ModalHeader>Add Task</ModalHeader>
+                <Modal 
+                isOpen={showAddTaskModal} 
+                toggle={toggleAddTaskModal}>
+                <ModalHeader>New Task</ModalHeader>
                 <ModalBody>
-                    <ProjectDViewAddTaskForm onFireCreateTask={onFireCreateTask}/>
+                    <ProjectDViewAddTaskForm 
+                    onFireCreateTask={onFireCreateTask}/>
                 </ModalBody>
                 <ModalFooter>
-                    <Button className="btn-info" onClick={onChangeCreateTaskButton}>Create Task</Button>
-                    <Button className="btn-secondary" onClick={toggleAddTaskModal}>Cancel</Button>
+                    <Button 
+                    className="btn-info" 
+                    onClick={onChangeCreateTaskButton}>Create Task</Button>
+                    <Button 
+                    className="btn-secondary" 
+                    onClick={toggleAddTaskModal}>Cancel</Button>
                 </ModalFooter>
             </Modal>
             </Col>
