@@ -2,8 +2,9 @@ const router = require('express').Router();
 const {check, validationResult} = require('express-validator');
 const moment = require('moment');
 
-// Import date services
+// Import date and user services
 const {dateStrToMoment, getEarliestDate, getLatestDate} = require('../services/dateServices');
+const { usernameToUserId, userIdToUsername } = require('../services/userServices');
 
 // Import models
 const Project = require('../models/project.model');
@@ -147,13 +148,19 @@ router.route('/add/:projectName').post(auth,
                 "members": req.user._id,
             };
 
+            const membersIdArray = await Promise.all(
+                req.body.members.map(async (member) => {
+                    return await usernameToUserId(member);
+                })
+                );
+
             let featuresToPush = {
                 $push: {
                     features: {
                         "name": req.body.name,
                         "description": req.body.description,
                         "creator": req.user._id,
-                        "members": req.body.members,
+                        "members": membersIdArray,
                         "startDate": "",
                         "endDate": "",
                         "tasks": []
