@@ -75,12 +75,19 @@ router.route('/add/:projectName').post(auth,
                     "features.name": req.body.featureName
                 };
 
+                const membersIdArray = await Promise.all(
+                    req.body.members.map(async (member) => {
+                        return await usernameToUserId(member);
+                    })
+                    );
+
                 let tasksToPush = {
                     $push: {
                         "features.$[feature].tasks":
                         {
                             "name": req.body.name,
                             "description": req.body.description,
+                            "members": membersIdArray,
                             "startDate": req.body.startDate,
                             "endDate": req.body.endDate
                         }
