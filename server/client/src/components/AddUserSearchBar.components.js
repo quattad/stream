@@ -14,6 +14,10 @@ import axios from 'axios';
  * 
  * searchBarId 
  * - to allow error messages (shown via popovers) to be shown to the correct input text field
+ * 
+ * isOutline
+ * - boolean value
+ * - sets 'Add' button and generated username container elements to outline (true)
  */
 
 const AddUserSearchBar = (props) => {
@@ -118,7 +122,7 @@ const AddUserSearchBar = (props) => {
                 </UncontrolledPopover>
                 <Col xs="3">
                     <Button
-                    outline
+                    outline={props.isOutline}
                     block
                     className="btn-round"
                     onClick={addUserToRenderedMembers}>Add</Button>
@@ -129,8 +133,8 @@ const AddUserSearchBar = (props) => {
                 <Col 
                 key={el}>
                     <Button
-                    key={el} 
-                    outline 
+                    key={el}
+                    outline={props.isOutline}
                     onClick={()=> {popElement(el)}} 
                     >{el} <i className="now-ui-icons ui-1_simple-remove" />
                     </Button>
