@@ -2,7 +2,11 @@ import React from "react";
 import { UncontrolledAlert, Label, Form, Input, InputGroup, FormGroup } from "reactstrap";
 import axios from "axios";
 
+// Import contexts
 import { useProjectDViewContext } from './ProjectDViewContext';
+
+// Import child components
+import AddUserSearchBar from '../AddUserSearchBar.components';
 
 export function ProjectDViewAddTaskForm(props) {
   const pdvContext = useProjectDViewContext();
@@ -32,32 +36,12 @@ export function ProjectDViewAddTaskForm(props) {
     setTaskDescriptionFocus(false)
   };
 
-  const [visibleCreateTaskAlert, setVisibleCreateTaskAlert] = React.useState(false);
-  const onFireVisibleCreateTaskAlert = () => {
-    setVisibleCreateTaskAlert(true);
-  };
-  const onDismissVisibleCreateTaskAlert = () => {
-    setVisibleCreateTaskAlert(false);
-  }
-
   // Define form save functions
   const onChangeTaskNameState = (e) => {
     setTaskNameState(e.target.value)
   };
   const onChangeTaskDescriptionState = (e) => {
     setTaskDescriptionState(e.target.value)
-  };
-  const onChangeTaskMembersState = (e) => {
-    let options = e.target.options;
-    let membersSelected = [];
-
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        membersSelected.push(options[i].value);
-      };
-    };
-
-    setTaskMembersState(membersSelected);
   };
   const onChangeTaskFeatureState = (e) => {
     setTaskFeatureState(e.target.value)
@@ -90,7 +74,6 @@ export function ProjectDViewAddTaskForm(props) {
   
       if (!res.data.error) {
         onFireReload();
-        onFireVisibleCreateTaskAlert();
       };
     } catch (err) {
       console.log(err);
@@ -120,8 +103,7 @@ export function ProjectDViewAddTaskForm(props) {
   return (
     <>
     <UncontrolledAlert 
-    isOpen={visibleCreateTaskAlert} 
-    toggle={onDismissVisibleCreateTaskAlert} 
+    isOpen={props.onFireCreateTask} 
     color="info">Task created successfully!</UncontrolledAlert>
     <Form 
     action="" 
@@ -155,17 +137,10 @@ export function ProjectDViewAddTaskForm(props) {
         <Label 
         className="float-left" 
         for="membersSelect">Add Members</Label>
-        <Input 
-        type="select" 
-        name="select" 
-        id="membersSelect" 
-        onChange={onChangeTaskMembersState} 
-        multiple>
-          <option 
-          value="member1">Member 1</option>
-          <option 
-          value="member2">Member 2</option>    
-        </Input>
+        <AddUserSearchBar
+        onChangeParentCompUsersState={setTaskMembersState}
+        searchBarId={1}
+        isOutline={false} />
       </FormGroup>
       <FormGroup>
         <Label 
@@ -176,8 +151,7 @@ export function ProjectDViewAddTaskForm(props) {
         name="select" 
         id="featureSelect" 
         onChange={onChangeTaskFeatureState}>
-          <option 
-          value="default">Default</option>
+          <option value="">Select Your Feature</option>
           {renderedFeatures}
         </Input> 
       </FormGroup>

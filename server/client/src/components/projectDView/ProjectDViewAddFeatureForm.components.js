@@ -4,6 +4,9 @@ import axios from "axios";
 
 import { useProjectDViewContext } from './ProjectDViewContext';
 
+// Import child components
+import AddUserSearchBar from '../AddUserSearchBar.components';
+
 export function ProjectDViewAddFeatureForm(props) {
   const pdvContext = useProjectDViewContext();
 
@@ -24,18 +27,6 @@ export function ProjectDViewAddFeatureForm(props) {
   // Define form save functions
   const onChangeFeatureNameState = (e) => {setFeatureNameState(e.target.value)};
   const onChangeFeatureDescriptionState = (e) => {setFeatureDescriptionState(e.target.value)};
-  const onChangeFeatureMembersState = (e) => {
-    let options = e.target.options;
-    let membersSelected = [];
-
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        membersSelected.push(options[i].value);
-      };
-    };
-
-    setFeatureMembersState(membersSelected);
-  };
 
   // Define form submission functions
   const onFireReload = () => {
@@ -74,10 +65,15 @@ export function ProjectDViewAddFeatureForm(props) {
 
   return (
     <>
-      <Form action="" className="form" method="">
+      <Form 
+      action="" 
+      className="form" 
+      method="">
         <FormGroup>
-          <Label className="float-left">Name</Label>
-          <InputGroup className={"no-border input-sm" + (featureNameFocus ?  "input-group-focus" : "")}>
+          <Label 
+          className="float-left">Name</Label>
+          <InputGroup 
+          className={"no-border input-sm" + (featureNameFocus ?  "input-group-focus" : "")}>
             <Input 
             type="text"
             onChange={onChangeFeatureNameState}
@@ -100,15 +96,10 @@ export function ProjectDViewAddFeatureForm(props) {
         <FormGroup>
           <Label 
           className="float-left">Add Members</Label>
-          <Input 
-          type="select" 
-          name="select" 
-          id="membersSelect" 
-          onChange={onChangeFeatureMembersState} 
-          multiple>
-            <option value="member1">Member 1</option>
-            <option value="member2">Member 2</option>    
-          </Input>
+          <AddUserSearchBar
+          onChangeParentCompUsersState={setFeatureMembersState}
+          searchBarId={1}
+          isOutline={false} />
         </FormGroup>
         <FormGroup>
           <Label className="float-left" for="creator">Created By</Label>
