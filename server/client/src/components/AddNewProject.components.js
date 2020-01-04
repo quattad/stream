@@ -165,13 +165,15 @@ const AddNewProject = () => {
                     <InputGroup>
                       <SearchBar
                       onChangeParentCompUsersState={onChangeMembersState}
-                      searchBarId={1}/>
+                      searchBarId={1}
+                      isOutline={true} />
                     </InputGroup>
                     <Label className="float-left"><h6>Add Admins</h6></Label>
                     <InputGroup>
                       <SearchBar
                       onChangeParentCompUsersState={onChangeAdminsState}
-                      searchBarId={2}/>
+                      searchBarId={2}
+                      isOutline={true} />
                     </InputGroup>
                   </CardBody>
                   <CardFooter 
