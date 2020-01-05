@@ -97,10 +97,10 @@ const AddNewProject = () => {
       document.body.scrollTop = 0;
       
       // Fetch user data and set admin to hold username of current logged-in user
-      (async () => {
-        const user = await fetchUserProfile(auth)
-        setAdminsState([user.username])
-      })();
+      // (async () => {
+      //   const user = await fetchUserProfile(auth)
+      //   setAdminsState([user.username])
+      // })();
       
       return function cleanup() {
         document.body.classList.remove("login-page");

@@ -20,12 +20,12 @@ router.route('/add').post(auth,
             .withMessage('Spaces will be converted into hyphens'),
         check('description')
             .isLength({max: 100}),
-        check('members')
-            .isArray()
-            .isLength({min: 1, max: 10}),
-        check('admins')
-            .isArray()
-            .isLength({min: 1}),
+        // check('members')
+        //     .isArray()
+        //     .isLength({min: 1, max: 10}),
+        // check('admins')
+        //     .isArray()
+        //     .isLength({min: 1}),
     ],
     async (req, res) => {
         const errors = validationResult(req);
@@ -94,7 +94,7 @@ router.route('/find/:projectName').get(auth,
         try {
             let project = await Project.findOne({
                 "name": req.params.projectName,
-                "members": req.user._id
+                // "members": req.user._id
             });
 
             const membersUsernameArray = await Promise.all(
