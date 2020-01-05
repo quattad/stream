@@ -284,7 +284,7 @@ const RegisterPublic = () => {
   return (
     <>
       <Navbar />
-      {fireRedirect && <Redirect to='/'> push={true} </Redirect>}
+      {fireRedirect && <Redirect to='/login'> push={true} </Redirect>}
       <div 
       className="page-header clear-filter" 
       filter-color="blue">
