@@ -45,15 +45,22 @@ function DashboardPrivate() {
 
   return (
     <>
-    <DashboardContext.Provider value={{
+    <DashboardContext.Provider 
+    value={{
       userState
-    }}>
-      <div className="page-header clear-filter" filter-color="blue">
-        <div className="page-header-image" 
+      }}>
+      <div 
+      className="page-header clear-filter" 
+      filter-color="blue">
+        <div 
+        className="page-header-image" 
         style={{
-            backgroundImage: "url(" + require("../assets/img/header.jpg") + ")"
-            }} ref={pageHeader}></div>
-          <Container><WelcomeText></WelcomeText></Container>
+          backgroundImage: "url(" + require("../assets/img/header.jpg") + ")"
+          }} 
+        ref={pageHeader}></div>
+          <Container>
+            <WelcomeText />
+          </Container>
           <Container>
             <div className="float-left col-md-6"><ProjectsTable /></div>
             {/* <div className="float-right col-md-6"><TeamTable /></div> */}
