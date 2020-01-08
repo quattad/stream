@@ -11,6 +11,9 @@ import {useAuthContext, fetchUserProfile} from "../services/AuthReducer"
 export const NavbarContext = React.createContext();
 export const useNavbarContext = () => {return React.useContext(NavbarContext)}
 
+// Logo var
+const navbarLogoPath = require("./../assets/img/stream-logo-white-text.png");
+
 function IndexNavbar () {
   const auth = useAuthContext(); 
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
@@ -54,7 +57,7 @@ function IndexNavbar () {
         <Navbar className={"navbar-dark fixed-top " + navbarColor} expand="lg" color="info">
         <Container>
           <div className="navbar-translate">
-            <NavbarBrand href={auth.state.isAuthenticated ? ("/dashboard") : ("/")} id="navbar-brand">Stream</NavbarBrand>
+            <NavbarBrand href={auth.state.isAuthenticated ? ("/dashboard") : ("/")} id="navbar-brand"><img alt="logo" src={navbarLogoPath} style={{width: "20%", height:"20%"}} /></NavbarBrand>
             <button className="navbar-toggler navbar-toggler-icon" onClick={() => {
               document.documentElement.classList.toggle("nav-open"); 
               setCollapseOpen(!collapseOpen);
