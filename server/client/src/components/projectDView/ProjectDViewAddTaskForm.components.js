@@ -57,28 +57,6 @@ export function ProjectDViewAddTaskForm(props) {
   const onFireReload = () => {
     window.location.reload();
   };
-
-  const onCreateTask = async () => { 
-    try {
-      const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/tasks/add/${pdvContext.projectData.name}`, {
-        "name": taskNameState,
-        "description": taskDescriptionState,
-        "members": taskMembersState,
-        "startDate": taskStartDateState,
-        "endDate": taskEndDateState,
-        "featureName": taskFeatureState
-      },
-      {
-        withCredentials: true
-      });
-  
-      if (!res.data.error) {
-        onFireReload();
-      };
-    } catch (err) {
-      console.log(err);
-    };
-  };
   
   // Create features as options for multiselect field
   const renderedFeatures = (
@@ -96,9 +74,38 @@ export function ProjectDViewAddTaskForm(props) {
 
     // Set trigger for POST req to API
     if (props.onFireCreateTask) {
-      onCreateTask();
+      (async () => { 
+        try {
+          const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/tasks/add/${pdvContext.projectData.name}`, {
+            "name": taskNameState,
+            "description": taskDescriptionState,
+            "members": taskMembersState,
+            "startDate": taskStartDateState,
+            "endDate": taskEndDateState,
+            "featureName": taskFeatureState
+          },
+          {
+            withCredentials: true
+          });
+      
+          if (!res.data.error) {
+            onFireReload();
+          };
+        } catch (err) {
+          console.log(err);
+        };
+      })();
     };
-  }, [pdvContext.userData.username, props.onFireCreateTask]);
+  }, [
+    pdvContext.userData.username, 
+    props.onFireCreateTask, 
+    pdvContext.projectData.name, 
+    taskDescriptionState, taskEndDateState, 
+    taskFeatureState, 
+    taskMembersState, 
+    taskNameState, 
+    taskStartDateState
+  ]);
 
   return (
     <>

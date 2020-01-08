@@ -32,36 +32,42 @@ export function ProjectDViewAddFeatureForm(props) {
   const onFireReload = () => {
     window.location.reload();
   };
-  
-  const onCreateFeature = async () => { 
-    try {
-      const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/features/add/${pdvContext.projectData.name}`, {
-        "name": featureNameState,
-        "description": featureDescriptionState,
-        "members": featureMembersState
-      },
-      {
-        withCredentials: true
-      });
-      
-      if (!res.data.error) {
-        onFireReload();
-      }
-    } catch (err) {
-      // How to print out validation errors?
-      console.log(err)
-    };
-  };
 
   React.useEffect(() => {
     // Fetch current user
     setFeatureCreatorState(pdvContext.userData.username);
 
     if (props.onFireCreateFeature) {
-      onCreateFeature();
+      // IIFE for POST request
+      (async () => { 
+        try {
+          const res = await axios.post(`${process.env.REACT_APP_BASE_SERVER_URL}/features/add/${pdvContext.projectData.name}`, {
+            "name": featureNameState,
+            "description": featureDescriptionState,
+            "members": featureMembersState
+          },
+          {
+            withCredentials: true
+          });
+          
+          if (!res.data.error) {
+            onFireReload();
+          }
+        } catch (err) {
+          console.log(err)
+        };
+      })();
+
     };
 
-  }, [pdvContext.userData.username, props.onFireCreateFeature]);
+  }, [
+    pdvContext.userData.username, 
+    props.onFireCreateFeature,
+    pdvContext.projectData.name,
+    featureNameState,
+    featureDescriptionState,
+    featureMembersState
+  ]);
 
   return (
     <>
