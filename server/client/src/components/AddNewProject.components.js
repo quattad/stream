@@ -8,7 +8,7 @@ import TransparentFooter from './TransparentFooter';
 import SearchBar from './AddUserSearchBar.components';
 
 // Import services
-import { fetchUserProfile, useAuthContext } from "../services/AuthReducer";
+import { useAuthContext } from "../services/AuthReducer";
 
 const AddNewProject = () => {
   let pageHeader = React.createRef();
